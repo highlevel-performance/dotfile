@@ -176,10 +176,7 @@ alias zap-baseline='docker run -t owasp/zap2docker-stable zap-baseline.py -t'
 # ================================
 # Network & System
 # ================================
-alias ports='netstat -tulanp'
-alias listening='lsof -i -P | grep LISTEN'
-alias myip='curl -s ifconfig.me'
-alias localip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
+alias listening='lsof -i -P | /usr/bin/grep LISTEN'
 alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
 
 # ================================

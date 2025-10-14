@@ -233,6 +233,48 @@ portcheck() {
   nc -zv $1 $2
 }
 
+# Show public IP information (IPv4 / IPv6)
+myip() {
+  local ipv4="$(curl -fs https://ipv4.icanhazip.com 2>/dev/null | tr -d '\n\r')"
+  local ipv6="$(curl -fs https://ipv6.icanhazip.com 2>/dev/null | tr -d '\n\r')"
+
+  if [ -n "$ipv4" ]; then
+    echo "IPv4: $ipv4"
+  else
+    echo "IPv4: unavailable"
+  fi
+
+  if [ -n "$ipv6" ]; then
+    echo "IPv6: $ipv6"
+  else
+    echo "IPv6: unavailable"
+  fi
+}
+
+# List listening TCP ports with fallbacks per platform
+ports() {
+  if command -v lsof >/dev/null 2>&1; then
+    lsof -nP -iTCP -sTCP:LISTEN
+  elif command -v ss >/dev/null 2>&1; then
+    ss -tulpn
+  else
+    if [[ "$OSTYPE" == darwin* ]]; then
+      netstat -anv | /usr/bin/grep LISTEN
+    else
+      netstat -tulanp
+    fi
+  fi
+}
+
+# Display local IPv4 addresses excluding loopback
+localip() {
+  if command -v ip >/dev/null 2>&1; then
+    ip -4 addr show | awk '/inet / {print $2}' | cut -d/ -f1 | sort -u
+  else
+    ifconfig | /usr/bin/grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | /usr/bin/grep -v '127.0.0.1' | awk '{print $NF}' | sort -u
+  fi
+}
+
 # ================================
 # File & Directory Functions
 # ================================
