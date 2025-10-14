@@ -1,0 +1,365 @@
+# ================================
+# DevSecOps Functions
+# ================================
+
+# ================================
+# Kubernetes Functions
+# ================================
+
+# Get all resources in a namespace
+kgetall() {
+  kubectl api-resources --verbs=list --namespaced -o name | xargs -n 1 kubectl get --show-kind --ignore-not-found -n ${1:-default}
+}
+
+# Get pod logs with fzf selection
+klogs() {
+  local pod=$(kubectl get pods -A -o custom-columns=":metadata.namespace,:metadata.name" | fzf | awk '{print $2 " -n " $1}')
+  if [ -n "$pod" ]; then
+    kubectl logs -f $pod
+  fi
+}
+
+# Execute into pod with fzf selection
+kexec() {
+  local pod=$(kubectl get pods -A -o custom-columns=":metadata.namespace,:metadata.name" | fzf | awk '{print $2 " -n " $1}')
+  if [ -n "$pod" ]; then
+    kubectl exec -it $pod -- ${1:-bash}
+  fi
+}
+
+# Port forward with fzf selection
+kport() {
+  local selection=$(kubectl get pods -A -o custom-columns=":metadata.namespace,:metadata.name" | fzf)
+  if [ -n "$selection" ]; then
+    local namespace=$(echo $selection | awk '{print $1}')
+    local pod=$(echo $selection | awk '{print $2}')
+    local port=${1:-8080}
+    kubectl port-forward -n $namespace $pod $port:$port
+  fi
+}
+
+# Check pod resource usage
+kresources() {
+  echo "=== Nodes ==="
+  kubectl top nodes
+  echo "\n=== Pods (All Namespaces) ==="
+  kubectl top pods -A --sort-by=memory
+}
+
+# Decode Kubernetes secrets
+kdecode-secret() {
+  kubectl get secret $1 -o json | jq '.data | map_values(@base64d)'
+}
+
+# ================================
+# Docker Functions
+# ================================
+
+# Remove all stopped containers
+dclean() {
+  docker rm $(docker ps -a -q -f status=exited)
+}
+
+# Remove dangling images
+dclean-images() {
+  docker rmi $(docker images -f "dangling=true" -q)
+}
+
+# Get container IP
+dip() {
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' "$@"
+}
+
+# Execute bash in running container
+dsh() {
+  docker exec -it $1 /bin/bash
+}
+
+# Show container resource usage
+dstats() {
+  docker stats --no-stream
+}
+
+# Scan Docker image for vulnerabilities
+dscan() {
+  if [ -z "$1" ]; then
+    echo "Usage: dscan <image-name>"
+    return 1
+  fi
+  echo "Scanning with Trivy..."
+  trivy image --severity HIGH,CRITICAL $1
+}
+
+# ================================
+# Security Scanning Functions
+# ================================
+
+# Full security scan of current directory
+secscan() {
+  echo "🔍 Running security scans..."
+  
+  if command -v trivy &> /dev/null; then
+    echo "\n=== Trivy File System Scan ==="
+    trivy fs .
+  fi
+  
+  if command -v grype &> /dev/null; then
+    echo "\n=== Grype Scan ==="
+    grype dir:.
+  fi
+  
+  if command -v semgrep &> /dev/null; then
+    echo "\n=== Semgrep Scan ==="
+    semgrep --config=auto .
+  fi
+  
+  if [ -f "Dockerfile" ]; then
+    if command -v hadolint &> /dev/null; then
+      echo "\n=== Dockerfile Linting ==="
+      hadolint Dockerfile
+    fi
+  fi
+  
+  if command -v tfsec &> /dev/null && [ -f "*.tf" ]; then
+    echo "\n=== Terraform Security Scan ==="
+    tfsec .
+  fi
+  
+  echo "\n✅ Security scan complete!"
+}
+
+# Scan Git repository for secrets
+gitscan() {
+  echo "🔍 Scanning for secrets in Git repository..."
+  
+  if command -v gitleaks &> /dev/null; then
+    echo "\n=== Gitleaks Scan ==="
+    gitleaks detect --source=. --verbose
+  fi
+  
+  if command -v trufflehog &> /dev/null; then
+    echo "\n=== TruffleHog Scan ==="
+    trufflehog filesystem . --json
+  fi
+  
+  echo "\n✅ Git scan complete!"
+}
+
+# ================================
+# AWS Functions
+# ================================
+
+# Switch AWS profile
+awsswitch() {
+  if [ -z "$1" ]; then
+    echo "Available profiles:"
+    aws configure list-profiles
+    return 1
+  fi
+  export AWS_PROFILE=$1
+  echo "Switched to AWS profile: $1"
+  aws sts get-caller-identity
+}
+
+# Get AWS account info
+awsinfo() {
+  echo "=== AWS Account Info ==="
+  aws sts get-caller-identity
+  echo "\n=== Region ==="
+  aws configure get region
+  echo "\n=== Profile ==="
+  echo $AWS_PROFILE
+}
+
+# List EC2 instances in a readable format
+ec2list() {
+  aws ec2 describe-instances \
+    --query 'Reservations[].Instances[].[InstanceId,State.Name,InstanceType,PrivateIpAddress,Tags[?Key==`Name`].Value|[0]]' \
+    --output table
+}
+
+# ================================
+# Terraform Functions
+# ================================
+
+# Terraform full workflow
+tfwork() {
+  echo "🚀 Running Terraform workflow..."
+  terraform fmt
+  terraform validate
+  terraform plan -out=tfplan
+  echo "\nTo apply: terraform apply tfplan"
+}
+
+# Terraform security check
+tfseccheck() {
+  echo "🔒 Running Terraform security checks..."
+  
+  if command -v tfsec &> /dev/null; then
+    echo "\n=== tfsec ==="
+    tfsec .
+  fi
+  
+  if command -v checkov &> /dev/null; then
+    echo "\n=== Checkov ==="
+    checkov -d .
+  fi
+  
+  if command -v terrascan &> /dev/null; then
+    echo "\n=== Terrascan ==="
+    terrascan scan -t terraform
+  fi
+}
+
+# ================================
+# Network Functions
+# ================================
+
+# Port scan
+portscan() {
+  if [ -z "$1" ]; then
+    echo "Usage: portscan <host>"
+    return 1
+  fi
+  nmap -T4 -F $1
+}
+
+# Check if port is open
+portcheck() {
+  if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: portcheck <host> <port>"
+    return 1
+  fi
+  nc -zv $1 $2
+}
+
+# ================================
+# File & Directory Functions
+# ================================
+
+# Create directory and cd into it
+mkcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+# Extract any archive
+extract() {
+  if [ -f $1 ]; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1     ;;
+      *.tar.gz)    tar xzf $1     ;;
+      *.bz2)       bunzip2 $1     ;;
+      *.rar)       unrar e $1     ;;
+      *.gz)        gunzip $1      ;;
+      *.tar)       tar xf $1      ;;
+      *.tbz2)      tar xjf $1     ;;
+      *.tgz)       tar xzf $1     ;;
+      *.zip)       unzip $1       ;;
+      *.Z)         uncompress $1  ;;
+      *.7z)        7z x $1        ;;
+      *)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+# Find process using port
+findport() {
+  lsof -i :$1
+}
+
+# Kill process on port
+killport() {
+  kill -9 $(lsof -t -i:$1)
+}
+
+# ================================
+# Git Functions
+# ================================
+
+# Git commit with conventional commit message
+gcom() {
+  if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: gcom <type> <message>"
+    echo "Types: feat, fix, docs, style, refactor, test, chore"
+    return 1
+  fi
+  git commit -m "$1: $2"
+}
+
+# Quick git push
+gpush() {
+  git add .
+  git commit -m "${1:-Update}"
+  git push
+}
+
+# ================================
+# System Info Functions
+# ================================
+
+# System information
+sysinfo() {
+  echo "=== System Information ==="
+  echo "Hostname: $(hostname)"
+  echo "OS: $(uname -s)"
+  echo "Kernel: $(uname -r)"
+  echo "Architecture: $(uname -m)"
+  echo "Shell: $SHELL"
+  echo "User: $USER"
+  echo "Uptime: $(uptime)"
+}
+
+# Show disk usage of current directory
+diskusage() {
+  du -sh * | sort -hr | head -20
+}
+
+# ================================
+# Development Functions
+# ================================
+
+# Start a simple HTTP server
+serve() {
+  python3 -m http.server ${1:-8000}
+}
+
+# Generate random password
+genpass() {
+  openssl rand -base64 ${1:-32}
+}
+
+# Encode to base64
+b64enc() {
+  echo -n "$1" | base64
+}
+
+# Decode from base64
+b64dec() {
+  echo -n "$1" | base64 -d
+}
+
+# ================================
+# Container Registry Functions
+# ================================
+
+# Login to multiple container registries
+registry-login() {
+  echo "🔐 Container Registry Login Helper"
+  echo "1. Docker Hub"
+  echo "2. AWS ECR"
+  echo "3. GCP GCR"
+  echo "4. Azure ACR"
+  echo "5. GitHub Container Registry"
+  read "choice?Select registry (1-5): "
+  
+  case $choice in
+    1) docker login ;;
+    2) aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin *.dkr.ecr.us-east-1.amazonaws.com ;;
+    3) gcloud auth configure-docker ;;
+    4) az acr login --name <registry-name> ;;
+    5) echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin ;;
+    *) echo "Invalid choice" ;;
+  esac
+}

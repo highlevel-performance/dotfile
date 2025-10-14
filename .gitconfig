@@ -1,0 +1,191 @@
+# User configuration is now managed by git-profile switcher
+# Run: git-profile-setup to configure personal and work profiles
+# Use: git-personal or git-work to switch between them
+
+# [user]
+# 	name = Your Name
+# 	email = your.email@example.com
+# 	signingkey = YOUR_GPG_KEY_ID
+
+[core]
+	editor = nvim
+	pager = delta
+	autocrlf = input
+	whitespace = trailing-space,space-before-tab
+	excludesfile = ~/.gitignore_global
+	sshCommand = ssh -i ~/.ssh/id_rsa -F /dev/null
+	
+[init]
+	defaultBranch = main
+
+[commit]
+	gpgsign = true
+	template = ~/.gitmessage
+
+[push]
+	default = current
+	autoSetupRemote = true
+
+[pull]
+	rebase = true
+
+[fetch]
+	prune = true
+	prunetags = true
+
+[rebase]
+	autoStash = true
+	autoSquash = true
+
+[merge]
+	tool = nvimdiff
+	conflictstyle = diff3
+
+[diff]
+	tool = nvimdiff
+	colorMoved = zebra
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	line-numbers = true
+	side-by-side = true
+	syntax-theme = Dracula
+
+[color]
+	ui = auto
+
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = green
+	changed = yellow
+	untracked = red
+
+[alias]
+	# Basic shortcuts
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	cm = commit -m
+	ca = commit --amend
+	can = commit --amend --no-edit
+	
+	# Logging
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	lga = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
+	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+	
+	# Diff
+	d = diff
+	ds = diff --staged
+	dc = diff --cached
+	
+	# Stash
+	sl = stash list
+	sa = stash apply
+	ss = stash save
+	
+	# Reset
+	unstage = reset HEAD --
+	undo = reset --soft HEAD^
+	
+	# Branch management
+	brd = branch -d
+	brD = branch -D
+	bm = branch -m
+	
+	# Remote
+	remotes = remote -v
+	
+	# Status
+	s = status -s
+	
+	# Show contributors
+	contributors = shortlog --summary --numbered
+	
+	# Security - Find sensitive data
+	audit = log --all --full-history --source -- "*password*" "*secret*" "*key*" "*.pem" "*.key"
+	
+	# List all aliases
+	aliases = config --get-regexp alias
+	
+	# Undo last commit but keep changes
+	uncommit = reset --soft HEAD~1
+	
+	# Clean up merged branches
+	cleanup = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d"
+	
+	# DevSecOps specific
+	sec-scan = "!gitleaks detect --source=. --verbose"
+	sec-history = log --all --full-history --source -- "*password*" "*secret*" "*key*" "*.pem" "*.key" "*token*"
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+# Security settings
+[transfer]
+	fsckobjects = true
+
+[fetch]
+	fsckobjects = true
+
+[receive]
+	fsckObjects = true
+
+# URL shortcuts for common platforms
+[url "git@github.com:"]
+	insteadOf = gh:
+	pushInsteadOf = gh:
+	pushInsteadOf = git://github.com/
+
+[url "git@gitlab.com:"]
+	insteadOf = gl:
+	pushInsteadOf = gl:
+	pushInsteadOf = git://gitlab.com/
+
+[url "git@bitbucket.org:"]
+	insteadOf = bb:
+	pushInsteadOf = bb:
+
+# Ignore SSL verification for self-signed certificates (use with caution)
+# [http]
+# 	sslVerify = false
+
+# Credential helper (macOS)
+[credential]
+	helper = osxkeychain
+
+# GPG signing
+[tag]
+	gpgsign = true
+	forceSignAnnotated = true
+
+# Include local gitconfig if exists
+[include]
+	path = ~/.gitconfig.local
+
+# User configuration is managed by git-profile switcher
+# Current profile settings will be added here by git-personal or git-work commands
+# NOTE: GitHub tokens are stored in ~/.github-tokens/ and loaded via scripts
+#       Never hardcode tokens in this file!
+[user]
+	name = Shivam Kumar
+	email = shivam.sk2003@gmail.com
+[github]
+	user = shivam2003-dev

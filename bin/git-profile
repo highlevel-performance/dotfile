@@ -1,0 +1,232 @@
+#!/usr/bin/env bash
+
+# ================================
+# Git Profile Switcher
+# Allows switching between personal and work Git configurations
+# ================================
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+# Configuration directory
+GIT_PROFILES_DIR="$HOME/.git-profiles"
+
+# Load .env for profile configuration
+DOTFILES_DIR="${HOME}/Desktop/dotfile"
+if [[ -f "${DOTFILES_DIR}/.env" ]]; then
+    set -a
+    source "${DOTFILES_DIR}/.env"
+    set +a
+fi
+
+# Initialize git profiles
+init_git_profiles() {
+    if [ ! -d "$GIT_PROFILES_DIR" ]; then
+        mkdir -p "$GIT_PROFILES_DIR"
+        
+        # Create personal profile from .env
+        cat > "$GIT_PROFILES_DIR/personal" << EOF
+[user]
+    name = ${GIT_PERSONAL_NAME}
+    email = ${GIT_PERSONAL_EMAIL}
+
+[github]
+    user = ${GIT_PERSONAL_GITHUB_USER}
+
+[core]
+    sshCommand = ssh -i ${GIT_PERSONAL_SSH_KEY} -F /dev/null
+EOF
+
+        # Create work profile from .env
+        cat > "$GIT_PROFILES_DIR/work" << EOF
+[user]
+    name = ${GIT_WORK_NAME}
+    email = ${GIT_WORK_EMAIL}
+
+[github]
+    user = ${GIT_WORK_GITHUB_USER}
+
+[core]
+    sshCommand = ssh -i ${GIT_WORK_SSH_KEY} -F /dev/null
+EOF
+
+        echo -e "${GREEN}✅ Git profiles created from .env configuration${NC}"
+        echo -e "${BLUE}Personal: ${GIT_PERSONAL_EMAIL}${NC}"
+        echo -e "${BLUE}Work: ${GIT_WORK_EMAIL}${NC}"
+        echo ""
+        echo -e "${YELLOW}To update profiles, edit ~/Desktop/dotfile/.env and run:${NC}"
+        echo -e "  ${BLUE}sync-git-profiles${NC}"
+    fi
+}
+
+# Show current Git configuration
+show_current_config() {
+    echo -e "${BLUE}Current Git Configuration:${NC}"
+    echo -e "  Name:  $(git config user.name)"
+    echo -e "  Email: $(git config user.email)"
+    
+    if [ -f "$HOME/.git-profile-current" ]; then
+        local current_profile=$(cat "$HOME/.git-profile-current")
+        echo -e "  ${GREEN}Active Profile: $current_profile${NC}"
+    else
+        echo -e "  ${YELLOW}No profile set${NC}"
+    fi
+}
+
+# Switch to a profile
+switch_profile() {
+    local profile=$1
+    local profile_file="$GIT_PROFILES_DIR/$profile"
+    
+    if [ ! -f "$profile_file" ]; then
+        echo -e "${YELLOW}Profile '$profile' not found!${NC}"
+        echo -e "${YELLOW}Available profiles:${NC}"
+        ls -1 "$GIT_PROFILES_DIR" 2>/dev/null || echo "  None"
+        return 1
+    fi
+    
+    # Extract values from profile
+    local name=$(grep "^\s*name" "$profile_file" | cut -d'=' -f2- | xargs)
+    local email=$(grep "^\s*email" "$profile_file" | cut -d'=' -f2- | xargs)
+    local signingkey=$(grep "^\s*signingkey" "$profile_file" | cut -d'=' -f2- | xargs)
+    local github_user=$(grep "^\s*user" "$profile_file" | cut -d'=' -f2- | xargs)
+    local sshCommand=$(grep "^\s*sshCommand" "$profile_file" | cut -d'=' -f2- | xargs)
+    
+    # Apply configuration globally
+    [ -n "$name" ] && git config --global user.name "$name"
+    [ -n "$email" ] && git config --global user.email "$email"
+    [ -n "$signingkey" ] && git config --global user.signingkey "$signingkey"
+    [ -n "$github_user" ] && git config --global github.user "$github_user"
+    [ -n "$sshCommand" ] && git config --global core.sshCommand "$sshCommand"
+    
+    # Save current profile
+    echo "$profile" > "$HOME/.git-profile-current"
+    
+    echo -e "${GREEN}✅ Switched to '$profile' profile${NC}"
+    show_current_config
+}
+
+# Set profile for current repository only
+set_local_profile() {
+    local profile=$1
+    local profile_file="$GIT_PROFILES_DIR/$profile"
+    
+    if [ ! -d ".git" ]; then
+        echo -e "${YELLOW}Not in a Git repository!${NC}"
+        return 1
+    fi
+    
+    if [ ! -f "$profile_file" ]; then
+        echo -e "${YELLOW}Profile '$profile' not found!${NC}"
+        return 1
+    fi
+    
+    # Extract user config from profile
+    local name=$(grep "name" "$profile_file" | cut -d'=' -f2 | xargs)
+    local email=$(grep "email" "$profile_file" | cut -d'=' -f2 | xargs)
+    local signingkey=$(grep "signingkey" "$profile_file" | cut -d'=' -f2 | xargs)
+    local sshCommand=$(grep "sshCommand" "$profile_file" | cut -d'=' -f2 | xargs)
+    
+    git config user.name "$name"
+    git config user.email "$email"
+    [ -n "$signingkey" ] && git config user.signingkey "$signingkey"
+    [ -n "$sshCommand" ] && git config core.sshCommand "$sshCommand"
+    
+    echo -e "${GREEN}✅ Set '$profile' profile for this repository${NC}"
+    echo -e "  Name:  $name"
+    echo -e "  Email: $email"
+}
+
+# List available profiles
+list_profiles() {
+    echo -e "${BLUE}Available Git Profiles:${NC}"
+    if [ -d "$GIT_PROFILES_DIR" ]; then
+        for profile in "$GIT_PROFILES_DIR"/*; do
+            if [ -f "$profile" ]; then
+                local profile_name=$(basename "$profile")
+                local email=$(grep "email" "$profile" | cut -d'=' -f2 | xargs)
+                
+                if [ -f "$HOME/.git-profile-current" ] && [ "$(cat $HOME/.git-profile-current)" = "$profile_name" ]; then
+                    echo -e "  ${GREEN}* $profile_name${NC} ($email)"
+                else
+                    echo -e "    $profile_name ($email)"
+                fi
+            fi
+        done
+    else
+        echo -e "${YELLOW}No profiles found. Run 'git-profile init' to create templates.${NC}"
+    fi
+}
+
+# Edit a profile
+edit_profile() {
+    local profile=$1
+    local profile_file="$GIT_PROFILES_DIR/$profile"
+    
+    if [ ! -f "$profile_file" ]; then
+        echo -e "${YELLOW}Profile '$profile' not found!${NC}"
+        return 1
+    fi
+    
+    ${EDITOR:-nvim} "$profile_file"
+}
+
+# Main function
+main() {
+    case "$1" in
+        init)
+            init_git_profiles
+            ;;
+        use)
+            if [ -z "$2" ]; then
+                echo -e "${YELLOW}Usage: git-profile use <profile-name>${NC}"
+                list_profiles
+                return 1
+            fi
+            switch_profile "$2"
+            ;;
+        local)
+            if [ -z "$2" ]; then
+                echo -e "${YELLOW}Usage: git-profile local <profile-name>${NC}"
+                list_profiles
+                return 1
+            fi
+            set_local_profile "$2"
+            ;;
+        list|ls)
+            list_profiles
+            ;;
+        edit)
+            if [ -z "$2" ]; then
+                echo -e "${YELLOW}Usage: git-profile edit <profile-name>${NC}"
+                list_profiles
+                return 1
+            fi
+            edit_profile "$2"
+            ;;
+        current|status)
+            show_current_config
+            ;;
+        *)
+            echo -e "${BLUE}Git Profile Switcher${NC}"
+            echo ""
+            echo "Usage:"
+            echo "  git-profile init              Initialize profile templates"
+            echo "  git-profile use <profile>     Switch global Git config to profile"
+            echo "  git-profile local <profile>   Set profile for current repo only"
+            echo "  git-profile list              List available profiles"
+            echo "  git-profile edit <profile>    Edit a profile"
+            echo "  git-profile current           Show current profile"
+            echo ""
+            echo "Examples:"
+            echo "  git-profile use personal      # Use personal profile globally"
+            echo "  git-profile use work          # Use work profile globally"
+            echo "  git-profile local personal    # Use personal for this repo only"
+            ;;
+    esac
+}
+
+main "$@"

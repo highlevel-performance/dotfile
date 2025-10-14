@@ -1,0 +1,187 @@
+# ================================
+# DevSecOps Environment Exports
+# ================================
+
+# ================================
+# Editor Settings
+# ================================
+export EDITOR='nvim'
+export VISUAL='nvim'
+export PAGER='less'
+
+# ================================
+# Language & Locale
+# ================================
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# ================================
+# Development Paths
+# ================================
+
+# Go
+export GOPATH="$HOME/go"
+export GOBIN="$GOPATH/bin"
+export GO111MODULE=on
+
+# Rust
+export RUST_BACKTRACE=1
+
+# Python
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONUNBUFFERED=1
+export PYENV_ROOT="$HOME/.pyenv"
+
+# Node
+export NODE_ENV="development"
+export NVM_DIR="$HOME/.nvm"
+
+# ================================
+# Cloud Provider CLIs
+# ================================
+
+# AWS
+export AWS_DEFAULT_REGION="ap-south-1"
+export AWS_PAGER=""
+
+# Azure
+export AZURE_DEFAULTS_LOCATION="eastus"
+
+# GCP
+export CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
+# ================================
+# Security Tools
+# ================================
+
+# Trivy
+export TRIVY_CACHE_DIR="$HOME/.cache/trivy"
+
+# SOPS (Secrets Encryption)
+export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+
+# Vault
+export VAULT_ADDR="https://vault.example.com:8200"
+
+# ================================
+# Kubernetes
+# ================================
+export KUBECONFIG="$HOME/.kube/config"
+export KUBE_EDITOR="nvim"
+
+# Helm
+export HELM_EXPERIMENTAL_OCI=1
+
+# ================================
+# Docker
+# ================================
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+export DOCKER_CONTENT_TRUST=1
+
+# ================================
+# Terraform
+# ================================
+export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+export TF_CLI_ARGS_plan="-parallelism=10"
+export TF_CLI_ARGS_apply="-parallelism=10"
+
+# ================================
+# History Settings
+# ================================
+export HISTSIZE=50000
+export SAVEHIST=50000
+export HISTFILE=~/.zsh_history
+export HISTCONTROL=ignoredups:erasedups
+
+# ================================
+# Less Settings (Better viewing)
+# ================================
+export LESS='-R -F -X -i -g -s -M -W'
+export LESSCHARSET='utf-8'
+
+# ================================
+# Grep Colors
+# ================================
+export GREP_COLOR='1;32'
+
+# ================================
+# FZF Settings
+# ================================
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+export FZF_DEFAULT_OPTS='
+  --height 40%
+  --layout=reverse
+  --border
+  --inline-info
+  --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9
+  --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9
+  --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
+  --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4
+'
+
+# ================================
+# BAT (Cat Clone) Settings
+# ================================
+export BAT_THEME="Dracula"
+
+# ================================
+# Ripgrep Settings
+# ================================
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+# ================================
+# Security & Privacy
+# ================================
+
+# Don't add sensitive commands to history
+export HISTIGNORE='*password*:*secret*:*token*:*api*key*:aws_access_key*:aws_secret*'
+
+# GPG
+export GPG_TTY=$(tty)
+
+# ================================
+# Performance
+# ================================
+
+# Parallel make (use sysctl on macOS, nproc on Linux)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  export MAKEFLAGS="-j$(sysctl -n hw.ncpu)"
+else
+  export MAKEFLAGS="-j$(nproc)"
+fi
+
+# ================================
+# DevSecOps Project Structure
+# ================================
+export PROJECTS_DIR="$HOME/projects"
+export SCRIPTS_DIR="$HOME/scripts"
+export TOOLS_DIR="$HOME/tools"
+
+# ================================
+# Man Pages Colors
+# ================================
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"
+
+# ================================
+# Custom Tool Configurations
+# ================================
+
+# Ansible
+export ANSIBLE_NOCOWS=1
+export ANSIBLE_HOST_KEY_CHECKING=False
+
+# Packer
+export PACKER_LOG=1
+export PACKER_LOG_PATH="$HOME/.packer.log"
+
+# ================================
+# XDG Base Directory
+# ================================
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"

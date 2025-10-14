@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+# ================================
+# Git Profile Setup Helper
+# Quick setup script for Git profiles
+# ================================
+
+echo "🔧 Git Profile Configuration Helper"
+echo "===================================="
+echo ""
+
+GIT_PROFILES_DIR="$HOME/.git-profiles"
+mkdir -p "$GIT_PROFILES_DIR"
+
+# Personal Profile
+echo "📝 Setting up PERSONAL profile"
+echo "------------------------------"
+read -p "Your personal name: " personal_name
+read -p "Your personal email: " personal_email
+read -p "Your personal GitHub username: " personal_github
+read -p "Personal GPG key ID (optional, press Enter to skip): " personal_gpg
+read -p "Personal SSH key path (default: ~/.ssh/id_rsa): " personal_ssh
+personal_ssh=${personal_ssh:-~/.ssh/id_rsa}
+
+cat > "$GIT_PROFILES_DIR/personal" << EOF
+[user]
+    name = $personal_name
+    email = $personal_email
+$([ -n "$personal_gpg" ] && echo "    signingkey = $personal_gpg")
+
+[github]
+    user = $personal_github
+
+[core]
+    sshCommand = ssh -i $personal_ssh -F /dev/null
+EOF
+
+echo "✅ Personal profile created"
+echo ""
+
+# Work Profile
+echo "📝 Setting up WORK profile"
+echo "-------------------------"
+read -p "Your work name: " work_name
+read -p "Your work email: " work_email
+read -p "Your work GitHub/GitLab username: " work_github
+read -p "Work GPG key ID (optional, press Enter to skip): " work_gpg
+read -p "Work SSH key path (default: ~/.ssh/id_rsa_work): " work_ssh
+work_ssh=${work_ssh:-~/.ssh/id_rsa_work}
+
+cat > "$GIT_PROFILES_DIR/work" << EOF
+[user]
+    name = $work_name
+    email = $work_email
+$([ -n "$work_gpg" ] && echo "    signingkey = $work_gpg")
+
+[github]
+    user = $work_github
+
+[core]
+    sshCommand = ssh -i $work_ssh -F /dev/null
+EOF
+
+echo "✅ Work profile created"
+echo ""
+
+# Set default profile
+echo "🎯 Set default profile"
+echo "---------------------"
+echo "1. Personal"
+echo "2. Work"
+read -p "Choose default profile (1 or 2): " default_choice
+
+if [ "$default_choice" = "1" ]; then
+    git-profile use personal
+    echo "✅ Personal profile set as default"
+elif [ "$default_choice" = "2" ]; then
+    git-profile use work
+    echo "✅ Work profile set as default"
+fi
+
+echo ""
+echo "✅ Git profiles setup complete!"
+echo ""
+echo "Quick commands:"
+echo "  git-personal        # Switch to personal profile"
+echo "  git-work           # Switch to work profile"
+echo "  git-profile local personal  # Use personal for current repo only"
+echo "  git-profile list   # List all profiles"
+echo "  git-profile current # Show current profile"
+echo ""
+echo "Note: The system will warn you if you're in a work directory"
+echo "      with personal profile (or vice versa)"

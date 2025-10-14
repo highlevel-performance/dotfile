@@ -1,0 +1,70 @@
+#!/bin/bash
+# Sync Git profiles from .env configuration
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+# Load .env file
+DOTFILES_DIR="${HOME}/Desktop/dotfile"
+if [[ -f "${DOTFILES_DIR}/.env" ]]; then
+    set -a
+    source "${DOTFILES_DIR}/.env"
+    set +a
+else
+    echo -e "${RED}Error: .env file not found at ${DOTFILES_DIR}/.env${NC}"
+    exit 1
+fi
+
+echo -e "${BLUE}Syncing Git profiles from .env...${NC}"
+
+# Create git-profiles directory if it doesn't exist
+mkdir -p ~/.git-profiles
+
+# Create personal profile
+echo -e "${BLUE}Creating personal profile...${NC}"
+cat > ~/.git-profiles/personal << EOF
+[user]
+    name = ${GIT_PERSONAL_NAME}
+    email = ${GIT_PERSONAL_EMAIL}
+
+[github]
+    user = ${GIT_PERSONAL_GITHUB_USER}
+
+[core]
+    sshCommand = ssh -i ${GIT_PERSONAL_SSH_KEY} -F /dev/null
+EOF
+
+echo -e "${GREEN}✅ Personal profile created${NC}"
+echo "   Name: ${GIT_PERSONAL_NAME}"
+echo "   Email: ${GIT_PERSONAL_EMAIL}"
+echo "   GitHub: ${GIT_PERSONAL_GITHUB_USER}"
+
+# Create work profile
+echo ""
+echo -e "${BLUE}Creating work profile...${NC}"
+cat > ~/.git-profiles/work << EOF
+[user]
+    name = ${GIT_WORK_NAME}
+    email = ${GIT_WORK_EMAIL}
+
+[github]
+    user = ${GIT_WORK_GITHUB_USER}
+
+[core]
+    sshCommand = ssh -i ${GIT_WORK_SSH_KEY} -F /dev/null
+EOF
+
+echo -e "${GREEN}✅ Work profile created${NC}"
+echo "   Name: ${GIT_WORK_NAME}"
+echo "   Email: ${GIT_WORK_EMAIL}"
+echo "   GitHub: ${GIT_WORK_GITHUB_USER}"
+
+echo ""
+echo -e "${GREEN}✅ Git profiles synced successfully!${NC}"
+echo ""
+echo -e "${BLUE}To switch profiles, use:${NC}"
+echo "  git-personal  # Switch to personal"
+echo "  git-work      # Switch to work"

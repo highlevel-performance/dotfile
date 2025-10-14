@@ -1,0 +1,212 @@
+#!/bin/bash
+# Git Authentication - Quick Reference
+
+cat << 'EOF'
+╔══════════════════════════════════════════════════════════════════════╗
+║          🔐 Git Authentication - Quick Reference                     ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+✅ ISSUE RESOLVED!
+─────────────────
+You can now clone and work with private repositories!
+
+📍 Current Status:
+  Profile: work (s.kumar@kimbal.io)
+  Token: ✅ Valid
+  Repository: ~/devops (successfully cloned!)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 HOW TO CLONE PRIVATE REPOSITORIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Method 1: Use git-clone-auth (RECOMMENDED ✅)
+────────────────────────────────────────────
+Automatically uses your current profile's token:
+
+    # Switch to correct profile first
+    git-work  # or git-personal
+
+    # Clone with automatic authentication
+    gclone https://github.com/org/repo.git
+
+    # Or use full command
+    git-clone-auth https://github.com/org/repo.git
+
+    # Clone into specific directory
+    gclone https://github.com/org/repo.git my-dir
+
+
+Method 2: Git Credential Helper (LONG-TERM ✅)
+──────────────────────────────────────────────
+Stores token in macOS Keychain (most secure):
+
+    # One-time setup
+    git config --global credential.helper osxkeychain
+
+    # Clone normally
+    git clone https://github.com/sinhaludyog/devops.git
+
+    # When prompted:
+    # Username: shivamkumar-kimbal (or shivam2003-dev)
+    # Password: [paste your token]
+
+    # Token is now saved! Future clones work automatically.
+
+
+Method 3: Manual Token (TEMPORARY)
+───────────────────────────────────
+For one-time use:
+
+    # Get token
+    TOKEN=$(github-token get work)
+
+    # Clone with token
+    git clone https://$TOKEN@github.com/org/repo.git
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 COMPLETE WORKFLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Work Repository:
+────────────────
+$ git-work                          # Switch to work profile
+$ gclone https://github.com/sinhaludyog/devops.git
+$ cd devops
+$ git status
+$ git commit -m "Fix bug"
+$ git push                          # ✅ Uses work credentials
+
+
+Personal Repository:
+────────────────────
+$ git-personal                      # Switch to personal profile
+$ gclone https://github.com/shivam2003-dev/my-project.git
+$ cd my-project
+$ git commit -m "Update"
+$ git push                          # ✅ Uses personal credentials
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 USEFUL COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Switch Profiles:
+  git-work                    # Switch to work
+  git-personal                # Switch to personal
+  git-profile current         # Check current profile
+
+Clone Repositories:
+  gclone <url>                # Clone with auto-auth
+  git-clone-auth <url>        # Full command name
+
+Token Management:
+  github-token list           # List all tokens
+  github-token test work      # Test work token
+  gh-token-work               # Get work token
+  gh-token-personal           # Get personal token
+
+Verify Setup:
+  git config user.email       # Check current email
+  git remote -v               # Check repository URL
+  ./status.sh                 # Full status check
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 FIX EXISTING REPOSITORIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+If you already cloned a repo but can't push/pull:
+
+Option 1: Re-clone (EASIEST)
+────────────────────────────
+$ rm -rf ~/old-repo
+$ git-work                          # or git-personal
+$ gclone https://github.com/org/repo.git
+
+
+Option 2: Update Remote URL
+────────────────────────────
+$ cd ~/old-repo
+$ git-work                          # or git-personal
+$ TOKEN=$(github-token get work)
+$ git remote set-url origin https://$TOKEN@github.com/org/repo.git
+$ git push
+
+
+Option 3: Use Credential Helper
+────────────────────────────────
+$ cd ~/old-repo
+$ git config --global credential.helper osxkeychain
+$ git remote set-url origin https://github.com/org/repo.git
+$ git push
+# Enter token when prompted
+# Token is now saved!
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🆘 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ "Repository not found"
+→ Test token: github-token test work
+→ Verify profile: git-profile current
+→ Use: gclone https://github.com/org/repo.git
+
+❌ "Authentication failed"
+→ Check profile: git config user.email
+→ Switch profile: git-work
+→ Re-clone: gclone https://github.com/org/repo.git
+
+❌ "Permission denied"
+→ Test token: github-token test work
+→ Check token permissions on GitHub
+→ Regenerate token if needed
+
+❌ Wrong email in commits
+→ Switch before committing: git-work or git-personal
+→ Fix last commit: git commit --amend --reset-author
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Full Guides:
+  cat GIT_AUTH_GUIDE.md       # Complete authentication guide
+  cat GIT_GITHUB_GUIDE.md     # Git & GitHub workflows
+  cat GIT_PROFILES.md         # Profile management
+  cat README.md               # Main documentation
+
+Quick Reference:
+  ./git-auth-help             # This guide
+  ./status.sh                 # Status check
+  ./QUICKSTART.sh             # Quick start
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ YOU'RE ALL SET!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Your repository is ready to use:
+  $ cd ~/devops
+  $ git status
+  $ git pull
+  $ git push
+
+Remember:
+  • Always switch profile first: git-work or git-personal
+  • Clone private repos with: gclone <url>
+  • Verify email before committing: git config user.email
+
+Happy coding! 🚀
+
+╚══════════════════════════════════════════════════════════════════════╝
+EOF

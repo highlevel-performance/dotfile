@@ -1,0 +1,232 @@
+# ================================
+# DevSecOps Aliases
+# ================================
+
+# ================================
+# Navigation
+# ================================
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias ~='cd ~'
+alias -- -='cd -'
+
+# ================================
+# List & File Operations
+# ================================
+alias la='eza -la --icons --git'
+alias l='eza -l --icons --git'
+alias ll='eza -la --icons --git'
+alias lt='eza --tree --level=2 --icons'
+alias lta='eza --tree --level=3 --icons'
+
+# ================================
+# Git Aliases
+# ================================
+alias g='git'
+alias gs='git status'
+alias ga='git add'
+alias gaa='git add --all'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gp='git push'
+alias gpl='git pull'
+alias gd='git diff'
+alias gco='git checkout'
+alias gb='git branch'
+alias gba='git branch -a'
+alias glog='git log --oneline --decorate --graph'
+alias gloga='git log --oneline --decorate --graph --all'
+alias gst='git stash'
+alias gstp='git stash pop'
+
+# Git Security
+alias git-audit='git log --all --full-history --source -- "*password*" "*secret*" "*key*" "*.pem" "*.key"'
+alias git-secrets='git secrets --scan'
+alias gitleaks='gitleaks detect --source=. --verbose'
+
+# Git Profile Management
+alias git-personal='git-profile use personal'
+alias git-work='git-profile use work'
+alias git-current='git-profile current'
+alias git-switch='git-profile list'
+
+# Git clone with authentication
+alias gclone='git-clone-auth'
+alias git-clone='git-clone-auth'
+
+# GitHub token shortcuts
+alias gh-token='github-token'
+alias gh-token-personal='github-token get personal'
+alias gh-token-work='github-token get work'
+alias gh-test='github-token test'
+
+# ================================
+# Kubernetes Aliases
+# ================================
+alias k='kubectl'
+alias kgp='kubectl get pods'
+alias kgpa='kubectl get pods -A'
+alias kgs='kubectl get svc'
+alias kgsa='kubectl get svc -A'
+alias kgn='kubectl get nodes'
+alias kgd='kubectl get deployments'
+alias kgda='kubectl get deployments -A'
+alias kgi='kubectl get ingress'
+alias kgia='kubectl get ingress -A'
+alias kgns='kubectl get namespaces'
+alias kd='kubectl describe'
+alias kdp='kubectl describe pod'
+alias kds='kubectl describe service'
+alias kl='kubectl logs'
+alias klf='kubectl logs -f'
+alias kex='kubectl exec -it'
+alias kdel='kubectl delete'
+alias ka='kubectl apply -f'
+alias kctx='kubectx'
+alias kns='kubens'
+alias kpf='kubectl port-forward'
+alias ktop='kubectl top'
+alias ktopp='kubectl top pods'
+alias ktopn='kubectl top nodes'
+
+# Kubectl quick pod shell
+alias kshell='kubectl run -it --rm debug --image=busybox --restart=Never -- sh'
+alias kshell-ubuntu='kubectl run -it --rm debug --image=ubuntu --restart=Never -- bash'
+
+# ================================
+# Docker Aliases
+# ================================
+alias d='docker'
+alias dc='docker-compose'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias di='docker images'
+alias drm='docker rm'
+alias drmi='docker rmi'
+alias drma='docker rm $(docker ps -a -q)'
+alias drmia='docker rmi $(docker images -q)'
+alias dex='docker exec -it'
+alias dlogs='docker logs -f'
+alias dstop='docker stop'
+alias dstart='docker start'
+alias drestart='docker restart'
+alias dprune='docker system prune -af'
+alias dvolumes='docker volume ls'
+alias dnetworks='docker network ls'
+alias dinspect='docker inspect'
+
+# Docker Security
+alias docker-scan='docker scan'
+alias trivy-docker='trivy image --severity HIGH,CRITICAL'
+
+# ================================
+# Terraform Aliases
+# ================================
+alias tf='terraform'
+alias tfi='terraform init'
+alias tfp='terraform plan'
+alias tfa='terraform apply'
+alias tfaa='terraform apply -auto-approve'
+alias tfd='terraform destroy'
+alias tfda='terraform destroy -auto-approve'
+alias tfv='terraform validate'
+alias tff='terraform fmt'
+alias tfr='terraform refresh'
+alias tfo='terraform output'
+alias tfw='terraform workspace'
+alias tfwl='terraform workspace list'
+alias tfws='terraform workspace select'
+alias tfsec='tfsec .'
+alias checkov-tf='checkov -d .'
+
+# ================================
+# AWS Aliases
+# ================================
+alias awswho='aws sts get-caller-identity'
+alias awsregion='aws configure get region'
+alias awsls='aws s3 ls'
+alias awsprofile='export AWS_PROFILE='
+alias ec2ls='aws ec2 describe-instances --query "Reservations[].Instances[].[InstanceId,State.Name,InstanceType,Tags[?Key==\`Name\`].Value|[0]]" --output table'
+alias lambda-ls='aws lambda list-functions --query "Functions[].[FunctionName,Runtime,LastModified]" --output table'
+alias s3-buckets='aws s3api list-buckets --query "Buckets[].[Name,CreationDate]" --output table'
+
+# ================================
+# Security Tools
+# ================================
+alias nmap-quick='nmap -T4 -F'
+alias nmap-full='nmap -T4 -A -v'
+alias nmap-vuln='nmap -sV --script vulners'
+alias trivy='trivy'
+alias trivy-fs='trivy fs .'
+alias trivy-config='trivy config .'
+alias grype='grype'
+alias grype-dir='grype dir:.'
+alias snyk='snyk'
+alias snyk-test='snyk test'
+alias snyk-monitor='snyk monitor'
+alias bandit='bandit -r .'
+alias safety='safety check'
+alias semgrep='semgrep --config=auto .'
+
+# OWASP ZAP
+alias zap-baseline='docker run -t owasp/zap2docker-stable zap-baseline.py -t'
+
+# ================================
+# Network & System
+# ================================
+alias ports='netstat -tulanp'
+alias listening='lsof -i -P | grep LISTEN'
+alias myip='curl -s ifconfig.me'
+alias localip="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
+alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -'
+
+# ================================
+# Process Management
+# ================================
+alias psg='ps aux | grep -v grep | grep -i -e VSZ -e'
+alias meminfo='free -m -l -t'
+alias psmem='ps auxf | sort -nr -k 4 | head -10'
+alias pscpu='ps auxf | sort -nr -k 3 | head -10'
+
+# ================================
+# Development Tools
+# ================================
+alias vim='nvim'
+alias vi='nvim'
+alias v='nvim'
+alias cat='bat --style=plain'
+alias catp='bat'
+alias grep='rg'
+alias find='fd'
+alias du='dust'
+alias df='duf'
+alias ps='procs'
+alias top='btop'
+alias htop='btop'
+
+# ================================
+# Python
+# ================================
+alias python='python3'
+alias pip='pip3'
+alias venv='python3 -m venv'
+alias activate='source venv/bin/activate'
+alias pytest-cov='pytest --cov=. --cov-report=html'
+
+# ================================
+# Misc
+# ================================
+alias reload='source ~/.zshrc'
+alias zshconfig='nvim ~/.zshrc'
+alias tmuxconfig='nvim ~/.tmux.conf'
+alias vimconfig='nvim ~/.config/nvim/init.lua'
+alias h='history'
+alias c='clear'
+alias path='echo $PATH | tr ":" "\n"'
+alias now='date +"%Y-%m-%d %H:%M:%S"'
+alias week='date +%V'
+
+# Make aliases available with sudo
+alias sudo='sudo '

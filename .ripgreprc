@@ -1,0 +1,33 @@
+# Ripgrep configuration file
+# Add custom patterns and settings
+
+# Don't search in these directories
+--glob=!.git/*
+--glob=!node_modules/*
+--glob=!vendor/*
+--glob=!.terraform/*
+--glob=!target/*
+--glob=!dist/*
+--glob=!build/*
+--glob=!*.min.js
+--glob=!*.map
+
+# Search hidden files
+--hidden
+
+# Follow symbolic links
+--follow
+
+# Smart case (case-insensitive unless uppercase letters are used)
+--smart-case
+
+# Show line numbers
+--line-number
+
+# Use colors
+--colors=line:fg:yellow
+--colors=line:style:bold
+--colors=path:fg:green
+--colors=path:style:bold
+--colors=match:fg:red
+--colors=match:style:bold

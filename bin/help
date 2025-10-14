@@ -1,0 +1,460 @@
+#!/bin/bash
+# DevSecOps Aliases Help System
+# Quick reference for all available aliases and functions
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
+
+# Function to display help categories
+show_categories() {
+    cat << 'EOF'
+╔══════════════════════════════════════════════════════════════════════╗
+║              DevSecOps Dotfiles - Help System                        ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+Available Help Topics:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  help git              Git aliases and commands
+  help kubernetes       Kubernetes (kubectl) aliases
+  help docker           Docker aliases and commands
+  help terraform        Terraform aliases
+  help aws              AWS CLI aliases
+  help azure            Azure CLI aliases
+  help gcp              Google Cloud Platform aliases
+  help security         Security scanning tools
+  help files            File and directory operations
+  help network          Network utilities
+  help system           System monitoring tools
+  help shortcuts        Quick shortcuts and tips
+  help all              Show all available aliases
+
+Examples:
+  help git              # Show all git aliases
+  help kubernetes       # Show all kubectl aliases
+  help docker           # Show all docker aliases
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Quick Search:
+  help | grep <keyword>   # Search for specific command
+  
+Examples:
+  help all | grep pod     # Find all pod-related commands
+  help all | grep log     # Find all logging commands
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EOF
+}
+
+# Git aliases
+show_git_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                     Git Aliases & Commands                           ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Basic Git Commands:${NC}"
+    echo -e "  ${GREEN}g${NC}                 → git"
+    echo -e "  ${GREEN}gs${NC}                → git status"
+    echo -e "  ${GREEN}ga${NC}                → git add"
+    echo -e "  ${GREEN}gaa${NC}               → git add --all"
+    echo -e "  ${GREEN}gc${NC}                → git commit"
+    echo -e "  ${GREEN}gcm${NC}               → git commit -m 'message'"
+    echo -e "  ${GREEN}gp${NC}                → git push"
+    echo -e "  ${GREEN}gpl${NC}               → git pull"
+    echo -e "  ${GREEN}gd${NC}                → git diff"
+    echo -e "  ${GREEN}gco${NC}               → git checkout"
+    echo -e "  ${GREEN}gb${NC}                → git branch"
+    echo -e "  ${GREEN}gba${NC}               → git branch -a"
+    echo ""
+    echo -e "${WHITE}Git Log & History:${NC}"
+    echo -e "  ${GREEN}glog${NC}              → git log (pretty, graph)"
+    echo -e "  ${GREEN}gloga${NC}             → git log --all (pretty, graph)"
+    echo -e "  ${GREEN}gst${NC}               → git stash"
+    echo -e "  ${GREEN}gstp${NC}              → git stash pop"
+    echo ""
+    echo -e "${WHITE}Git Profile Management:${NC}"
+    echo -e "  ${GREEN}git-personal${NC}      → Switch to personal profile"
+    echo -e "  ${GREEN}git-work${NC}          → Switch to work profile"
+    echo -e "  ${GREEN}git-current${NC}       → Show current profile"
+    echo -e "  ${GREEN}git-switch${NC}        → List all profiles"
+    echo ""
+    echo -e "${WHITE}Git Clone with Authentication:${NC}"
+    echo -e "  ${GREEN}gclone <url>${NC}      → Clone with auto-authentication"
+    echo -e "  ${GREEN}git-clone-auth <url>${NC} → Same as gclone"
+    echo ""
+    echo -e "${WHITE}GitHub Token Management:${NC}"
+    echo -e "  ${GREEN}github-token list${NC} → List all tokens"
+    echo -e "  ${GREEN}github-token test personal${NC} → Test personal token"
+    echo -e "  ${GREEN}github-token test work${NC} → Test work token"
+    echo -e "  ${GREEN}gh-token${NC}          → Shortcut for github-token"
+    echo -e "  ${GREEN}gh-token-personal${NC} → Get personal token"
+    echo -e "  ${GREEN}gh-token-work${NC}     → Get work token"
+    echo ""
+    echo -e "${WHITE}Git Security:${NC}"
+    echo -e "  ${GREEN}git-audit${NC}         → Audit git history for secrets"
+    echo -e "  ${GREEN}gitleaks${NC}          → Scan for leaked secrets"
+    echo ""
+}
+
+# Kubernetes aliases
+show_kubernetes_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                  Kubernetes (kubectl) Aliases                        ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Basic kubectl:${NC}"
+    echo -e "  ${GREEN}k${NC}                 → kubectl"
+    echo -e "  ${GREEN}kgp${NC}               → kubectl get pods"
+    echo -e "  ${GREEN}kgpa${NC}              → kubectl get pods -A (all namespaces)"
+    echo -e "  ${GREEN}kgs${NC}               → kubectl get services"
+    echo -e "  ${GREEN}kgsa${NC}              → kubectl get services -A"
+    echo -e "  ${GREEN}kgn${NC}               → kubectl get nodes"
+    echo -e "  ${GREEN}kgd${NC}               → kubectl get deployments"
+    echo -e "  ${GREEN}kgda${NC}              → kubectl get deployments -A"
+    echo ""
+    echo -e "${WHITE}Describe & Details:${NC}"
+    echo -e "  ${GREEN}kd${NC}                → kubectl describe"
+    echo -e "  ${GREEN}kdp${NC}               → kubectl describe pod"
+    echo -e "  ${GREEN}kds${NC}               → kubectl describe service"
+    echo -e "  ${GREEN}kdd${NC}               → kubectl describe deployment"
+    echo ""
+    echo -e "${WHITE}Logs & Debugging:${NC}"
+    echo -e "  ${GREEN}kl${NC}                → kubectl logs"
+    echo -e "  ${GREEN}klf${NC}               → kubectl logs -f (follow)"
+    echo -e "  ${GREEN}ke${NC}                → kubectl exec -it"
+    echo -e "  ${GREEN}kdel${NC}              → kubectl delete"
+    echo ""
+    echo -e "${WHITE}Apply & Create:${NC}"
+    echo -e "  ${GREEN}ka${NC}                → kubectl apply -f"
+    echo -e "  ${GREEN}kcreate${NC}           → kubectl create"
+    echo -e "  ${GREEN}kedit${NC}             → kubectl edit"
+    echo ""
+    echo -e "${WHITE}Context & Namespace:${NC}"
+    echo -e "  ${GREEN}kctx${NC}              → kubectx (switch context)"
+    echo -e "  ${GREEN}kns${NC}               → kubens (switch namespace)"
+    echo -e "  ${GREEN}kgc${NC}               → kubectl config get-contexts"
+    echo -e "  ${GREEN}kcc${NC}               → kubectl config current-context"
+    echo ""
+    echo -e "${WHITE}Custom Functions:${NC}"
+    echo -e "  ${GREEN}kgetall${NC}           → Get all resources in namespace"
+    echo -e "  ${GREEN}klogs <pod>${NC}       → Get logs from pod"
+    echo -e "  ${GREEN}kexec <pod> [cmd]${NC} → Exec into pod (default: bash)"
+    echo -e "  ${GREEN}kport <pod> <port>${NC} → Port forward to pod"
+    echo -e "  ${GREEN}ktail <pod>${NC}       → Tail logs from pod"
+    echo ""
+}
+
+# Docker aliases
+show_docker_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                       Docker Aliases                                 ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Basic Docker:${NC}"
+    echo -e "  ${GREEN}d${NC}                 → docker"
+    echo -e "  ${GREEN}dps${NC}               → docker ps"
+    echo -e "  ${GREEN}dpsa${NC}              → docker ps -a"
+    echo -e "  ${GREEN}dimg${NC}              → docker images"
+    echo -e "  ${GREEN}drun${NC}              → docker run"
+    echo -e "  ${GREEN}dstop${NC}             → docker stop"
+    echo -e "  ${GREEN}drm${NC}               → docker rm"
+    echo -e "  ${GREEN}drmi${NC}              → docker rmi"
+    echo ""
+    echo -e "${WHITE}Docker Compose:${NC}"
+    echo -e "  ${GREEN}dc${NC}                → docker-compose"
+    echo -e "  ${GREEN}dcup${NC}              → docker-compose up -d"
+    echo -e "  ${GREEN}dcdown${NC}            → docker-compose down"
+    echo -e "  ${GREEN}dcrestart${NC}         → docker-compose restart"
+    echo -e "  ${GREEN}dclogs${NC}            → docker-compose logs -f"
+    echo ""
+    echo -e "${WHITE}Docker Management:${NC}"
+    echo -e "  ${GREEN}dexec${NC}             → docker exec -it"
+    echo -e "  ${GREEN}dlogs${NC}             → docker logs"
+    echo -e "  ${GREEN}dlogsf${NC}            → docker logs -f"
+    echo -e "  ${GREEN}dinspect${NC}          → docker inspect"
+    echo ""
+    echo -e "${WHITE}Docker Cleanup:${NC}"
+    echo -e "  ${GREEN}dclean${NC}            → Remove stopped containers"
+    echo -e "  ${GREEN}dprune${NC}            → docker system prune"
+    echo -e "  ${GREEN}dprunea${NC}           → docker system prune -a"
+    echo ""
+    echo -e "${WHITE}Security Scanning:${NC}"
+    echo -e "  ${GREEN}dscan <image>${NC}     → Scan Docker image with trivy"
+    echo ""
+}
+
+# Terraform aliases
+show_terraform_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                     Terraform Aliases                                ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Basic Terraform:${NC}"
+    echo -e "  ${GREEN}tf${NC}                → terraform"
+    echo -e "  ${GREEN}tfi${NC}               → terraform init"
+    echo -e "  ${GREEN}tfp${NC}               → terraform plan"
+    echo -e "  ${GREEN}tfa${NC}               → terraform apply"
+    echo -e "  ${GREEN}tfd${NC}               → terraform destroy"
+    echo -e "  ${GREEN}tfv${NC}               → terraform validate"
+    echo -e "  ${GREEN}tff${NC}               → terraform fmt"
+    echo ""
+    echo -e "${WHITE}Terraform Workspace:${NC}"
+    echo -e "  ${GREEN}tfw${NC}               → terraform workspace"
+    echo -e "  ${GREEN}tfwl${NC}              → terraform workspace list"
+    echo -e "  ${GREEN}tfws${NC}              → terraform workspace select"
+    echo ""
+    echo -e "${WHITE}Terraform State:${NC}"
+    echo -e "  ${GREEN}tfs${NC}               → terraform state"
+    echo -e "  ${GREEN}tfsl${NC}              → terraform state list"
+    echo -e "  ${GREEN}tfss${NC}              → terraform state show"
+    echo ""
+    echo -e "${WHITE}Terraform Security:${NC}"
+    echo -e "  ${GREEN}tfsec${NC}             → Run tfsec security scan"
+    echo ""
+}
+
+# AWS aliases
+show_aws_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                        AWS CLI Aliases                               ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}AWS Profile Management:${NC}"
+    echo -e "  ${GREEN}awsp${NC}              → aws --profile"
+    echo -e "  ${GREEN}awsls${NC}             → List AWS profiles"
+    echo ""
+    echo -e "${WHITE}EC2:${NC}"
+    echo -e "  ${GREEN}ec2-list${NC}          → List EC2 instances"
+    echo -e "  ${GREEN}ec2-start${NC}         → Start EC2 instance"
+    echo -e "  ${GREEN}ec2-stop${NC}          → Stop EC2 instance"
+    echo ""
+    echo -e "${WHITE}S3:${NC}"
+    echo -e "  ${GREEN}s3ls${NC}              → aws s3 ls"
+    echo -e "  ${GREEN}s3cp${NC}              → aws s3 cp"
+    echo -e "  ${GREEN}s3sync${NC}            → aws s3 sync"
+    echo ""
+    echo -e "${WHITE}Custom Functions:${NC}"
+    echo -e "  ${GREEN}awsswitch <profile>${NC} → Switch AWS profile"
+    echo ""
+}
+
+# Azure aliases
+show_azure_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                      Azure CLI Aliases                               ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Basic Azure:${NC}"
+    echo -e "  ${GREEN}az${NC}                → Azure CLI"
+    echo -e "  ${GREEN}azl${NC}               → az login"
+    echo -e "  ${GREEN}azls${NC}              → List Azure subscriptions"
+    echo ""
+    echo -e "${WHITE}Azure VM:${NC}"
+    echo -e "  ${GREEN}azvmlist${NC}          → List VMs"
+    echo -e "  ${GREEN}azvmstart${NC}         → Start VM"
+    echo -e "  ${GREEN}azvmstop${NC}          → Stop VM"
+    echo ""
+}
+
+# GCP aliases
+show_gcp_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                    Google Cloud Platform Aliases                     ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Basic GCP:${NC}"
+    echo -e "  ${GREEN}gcp${NC}               → gcloud"
+    echo -e "  ${GREEN}gcpls${NC}             → List GCP projects"
+    echo -e "  ${GREEN}gcpset${NC}            → Set GCP project"
+    echo ""
+    echo -e "${WHITE}GCE:${NC}"
+    echo -e "  ${GREEN}gce-list${NC}          → List GCE instances"
+    echo -e "  ${GREEN}gce-start${NC}         → Start GCE instance"
+    echo -e "  ${GREEN}gce-stop${NC}          → Stop GCE instance"
+    echo ""
+}
+
+# Security aliases
+show_security_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                    Security Scanning Tools                           ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Container Security:${NC}"
+    echo -e "  ${GREEN}dscan <image>${NC}     → Scan Docker image with Trivy"
+    echo -e "  ${GREEN}trivy${NC}             → Trivy security scanner"
+    echo ""
+    echo -e "${WHITE}Code Security:${NC}"
+    echo -e "  ${GREEN}secscan <dir>${NC}     → Security scan directory"
+    echo -e "  ${GREEN}gitscan${NC}           → Scan git repo for secrets"
+    echo -e "  ${GREEN}gitleaks${NC}          → Detect secrets in git"
+    echo ""
+    echo -e "${WHITE}Infrastructure Security:${NC}"
+    echo -e "  ${GREEN}tfsec${NC}             → Terraform security scan"
+    echo -e "  ${GREEN}hadolint${NC}          → Dockerfile linter"
+    echo ""
+}
+
+# Files aliases
+show_files_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                 File & Directory Operations                          ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Navigation:${NC}"
+    echo -e "  ${GREEN}..${NC}                → cd .."
+    echo -e "  ${GREEN}...${NC}               → cd ../.."
+    echo -e "  ${GREEN}....${NC}              → cd ../../.."
+    echo -e "  ${GREEN}~${NC}                 → cd ~"
+    echo -e "  ${GREEN}-${NC}                 → cd -"
+    echo ""
+    echo -e "${WHITE}List Files (using eza):${NC}"
+    echo -e "  ${GREEN}la${NC}                → List all files with details"
+    echo -e "  ${GREEN}l${NC}                 → List files"
+    echo -e "  ${GREEN}ll${NC}                → List all files"
+    echo -e "  ${GREEN}lt${NC}                → List as tree (2 levels)"
+    echo -e "  ${GREEN}lta${NC}               → List as tree (3 levels)"
+    echo ""
+    echo -e "${WHITE}File Operations:${NC}"
+    echo -e "  ${GREEN}cat${NC}               → Use 'bat' (syntax highlighting)"
+    echo -e "  ${GREEN}find${NC}              → Use 'fd' (faster find)"
+    echo -e "  ${GREEN}grep${NC}              → Use 'rg' (ripgrep)"
+    echo ""
+}
+
+# Network aliases
+show_network_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                      Network Utilities                               ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Network Info:${NC}"
+    echo -e "  ${GREEN}myip${NC}              → Show public IP"
+    echo -e "  ${GREEN}localip${NC}           → Show local IP"
+    echo -e "  ${GREEN}ports${NC}             → Show listening ports"
+    echo ""
+}
+
+# System aliases
+show_system_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                    System Monitoring Tools                           ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}System Monitoring:${NC}"
+    echo -e "  ${GREEN}btop${NC}              → Better top (resource monitor)"
+    echo -e "  ${GREEN}htop${NC}              → Interactive process viewer"
+    echo -e "  ${GREEN}procs${NC}             → Modern ps replacement"
+    echo -e "  ${GREEN}dust${NC}              → Disk usage (better du)"
+    echo -e "  ${GREEN}duf${NC}               → Disk usage (better df)"
+    echo ""
+}
+
+# Shortcuts
+show_shortcuts_help() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║                    Shortcuts & Tips                                  ║${NC}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${WHITE}Dotfiles Management:${NC}"
+    echo -e "  ${GREEN}help${NC}              → Show this help"
+    echo -e "  ${GREEN}help <topic>${NC}      → Show help for specific topic"
+    echo -e "  ${GREEN}reload${NC}            → Reload shell configuration"
+    echo -e "  ${GREEN}dotfiles${NC}          → Go to dotfiles directory"
+    echo ""
+    echo -e "${WHITE}Quick Access:${NC}"
+    echo -e "  ${GREEN}work${NC}              → cd ~/work"
+    echo -e "  ${GREEN}personal${NC}          → cd ~/personal"
+    echo -e "  ${GREEN}projects${NC}          → cd ~/projects"
+    echo ""
+    echo -e "${WHITE}Fuzzy Finding:${NC}"
+    echo -e "  ${GREEN}Ctrl+R${NC}            → Search command history (fzf)"
+    echo -e "  ${GREEN}Ctrl+T${NC}            → Search files (fzf)"
+    echo -e "  ${GREEN}z <dir>${NC}           → Jump to directory (zoxide)"
+    echo ""
+}
+
+# Show all aliases
+show_all_help() {
+    show_git_help
+    echo ""
+    show_kubernetes_help
+    echo ""
+    show_docker_help
+    echo ""
+    show_terraform_help
+    echo ""
+    show_aws_help
+    echo ""
+    show_azure_help
+    echo ""
+    show_gcp_help
+    echo ""
+    show_security_help
+    echo ""
+    show_files_help
+    echo ""
+    show_network_help
+    echo ""
+    show_system_help
+    echo ""
+    show_shortcuts_help
+}
+
+# Main function
+main() {
+    local topic="${1:-}"
+    
+    case "$topic" in
+        git)
+            show_git_help
+            ;;
+        kubernetes|kubectl|k8s)
+            show_kubernetes_help
+            ;;
+        docker)
+            show_docker_help
+            ;;
+        terraform|tf)
+            show_terraform_help
+            ;;
+        aws)
+            show_aws_help
+            ;;
+        azure)
+            show_azure_help
+            ;;
+        gcp|gcloud)
+            show_gcp_help
+            ;;
+        security|sec)
+            show_security_help
+            ;;
+        files|file|ls)
+            show_files_help
+            ;;
+        network|net)
+            show_network_help
+            ;;
+        system|sys)
+            show_system_help
+            ;;
+        shortcuts|tips)
+            show_shortcuts_help
+            ;;
+        all)
+            show_all_help
+            ;;
+        *)
+            show_categories
+            ;;
+    esac
+}
+
+main "$@"

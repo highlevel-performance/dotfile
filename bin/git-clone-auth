@@ -1,0 +1,126 @@
+#!/bin/bash
+# Git clone with automatic authentication using stored GitHub tokens
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Load .env for profile configuration
+DOTFILES_DIR="${HOME}/Desktop/dotfile"
+if [[ -f "${DOTFILES_DIR}/.env" ]]; then
+    set -a
+    source "${DOTFILES_DIR}/.env"
+    set +a
+fi
+
+# Function to get current profile
+get_current_profile() {
+    local email=$(git config --global user.email)
+    
+    if [ "$email" = "${GIT_PERSONAL_EMAIL}" ]; then
+        echo "personal"
+    elif [ "$email" = "${GIT_WORK_EMAIL}" ]; then
+        echo "work"
+    else
+        echo ""
+    fi
+}
+
+# Function to get token for current profile
+get_current_token() {
+    local profile=$(get_current_profile)
+    
+    if [ -z "$profile" ]; then
+        echo -e "${RED}Error: No git profile detected${NC}" >&2
+        echo "Run: git-personal or git-work" >&2
+        return 1
+    fi
+    
+    local token_file=~/.github-tokens/$profile.token
+    
+    if [ ! -f "$token_file" ]; then
+        echo -e "${RED}Error: No token found for profile '$profile'${NC}" >&2
+        return 1
+    fi
+    
+    cat "$token_file"
+}
+
+# Main function
+main() {
+    if [ $# -eq 0 ]; then
+        echo "Usage: git-clone-auth <repository-url> [directory]"
+        echo ""
+        echo "Examples:"
+        echo "  git-clone-auth https://github.com/user/repo.git"
+        echo "  git-clone-auth https://github.com/user/repo.git my-dir"
+        echo ""
+        echo "Current profile: $(get_current_profile || echo 'none')"
+        return 1
+    fi
+    
+    local repo_url="$1"
+    local target_dir="$2"
+    local profile=$(get_current_profile)
+    
+    if [ -z "$profile" ]; then
+        return 1
+    fi
+    
+    echo -e "${BLUE}Using profile: ${GREEN}$profile${NC}"
+    
+    # Get token
+    local token=$(get_current_token)
+    if [ -z "$token" ]; then
+        return 1
+    fi
+    
+    # Extract repo info from URL
+    if [[ "$repo_url" =~ github\.com[:/]([^/]+)/([^/\.]+) ]]; then
+        local owner="${BASH_REMATCH[1]}"
+        local repo="${BASH_REMATCH[2]}"
+        
+        echo -e "${BLUE}Repository: ${NC}$owner/$repo"
+        
+        # Construct authenticated URL
+        local auth_url="https://${token}@github.com/${owner}/${repo}.git"
+        
+        # Clone with authentication
+        if [ -n "$target_dir" ]; then
+            echo -e "${BLUE}Cloning into: ${NC}$target_dir"
+            git clone "$auth_url" "$target_dir"
+        else
+            echo -e "${BLUE}Cloning...${NC}"
+            git clone "$auth_url"
+        fi
+        
+        local exit_code=$?
+        
+        if [ $exit_code -eq 0 ]; then
+            echo -e "${GREEN}✅ Successfully cloned!${NC}"
+            
+            # Set local git config to use the correct profile
+            local cloned_dir="$target_dir"
+            [ -z "$cloned_dir" ] && cloned_dir="$repo"
+            
+            if [ -d "$cloned_dir" ]; then
+                cd "$cloned_dir"
+                git config user.name "$(git config --global user.name)"
+                git config user.email "$(git config --global user.email)"
+                git config github.user "$(git config --global github.user)"
+                echo -e "${GREEN}✅ Local git config set for $profile profile${NC}"
+            fi
+        else
+            echo -e "${RED}❌ Clone failed${NC}"
+            return $exit_code
+        fi
+    else
+        echo -e "${RED}Error: Invalid GitHub URL${NC}"
+        return 1
+    fi
+}
+
+main "$@"
