@@ -219,7 +219,51 @@ fi
 print_success "Backup created at $backup_dir"
 
 # ================================
-# 7. Create Symlinks
+# 7. Copy dotfiles to ~/.dotfiles
+# ================================
+
+print_header "${WRENCH} Installing dotfiles"
+
+INSTALL_DIR="$HOME/.dotfiles"
+
+# Create or update ~/.dotfiles directory
+if [ -d "$INSTALL_DIR" ]; then
+    print_info "Updating existing dotfiles installation..."
+    # Backup existing .env if present
+    if [ -f "$INSTALL_DIR/.env" ]; then
+        cp "$INSTALL_DIR/.env" "$INSTALL_DIR/.env.backup.$(date +%Y%m%d_%H%M%S)"
+        print_info "Backed up existing .env file"
+    fi
+    rm -rf "$INSTALL_DIR"
+fi
+
+print_info "Copying dotfiles to $INSTALL_DIR..."
+mkdir -p "$INSTALL_DIR"
+cp -r "$DOTFILES_DIR"/* "$INSTALL_DIR"/
+cp -r "$DOTFILES_DIR"/.* "$INSTALL_DIR"/ 2>/dev/null || true
+
+# Make all bin scripts executable
+print_info "Making bin scripts executable..."
+if [ -d "$INSTALL_DIR/bin" ]; then
+    chmod +x "$INSTALL_DIR"/bin/*
+    print_success "All bin scripts are now executable"
+fi
+
+# Make all demo scripts in docs executable
+print_info "Making demo scripts executable..."
+if [ -d "$INSTALL_DIR/docs" ]; then
+    chmod +x "$INSTALL_DIR"/docs/*.sh 2>/dev/null || true
+    print_success "All demo scripts are now executable"
+fi
+
+# Copy .env.example if .env doesn't exist
+if [ ! -f "$INSTALL_DIR/.env" ] && [ -f "$INSTALL_DIR/.env.example" ]; then
+    cp "$INSTALL_DIR/.env.example" "$INSTALL_DIR/.env"
+    print_warning "Created .env file from .env.example - Please edit it with your values!"
+fi
+
+# ================================
+# 8. Create Symlinks
 # ================================
 
 print_header "${WRENCH} Creating symlinks"
@@ -237,31 +281,19 @@ create_symlink() {
     print_success "Linked: $target -> $source"
 }
 
-create_symlink "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
-create_symlink "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
-create_symlink "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
-create_symlink "$DOTFILES_DIR/.gitignore_global" "$HOME/.gitignore_global"
-create_symlink "$DOTFILES_DIR/.aliases" "$HOME/.aliases"
-create_symlink "$DOTFILES_DIR/.functions" "$HOME/.functions"
-create_symlink "$DOTFILES_DIR/.exports" "$HOME/.exports"
-create_symlink "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
+create_symlink "$INSTALL_DIR/.zshrc" "$HOME/.zshrc"
+create_symlink "$INSTALL_DIR/.tmux.conf" "$HOME/.tmux.conf"
+create_symlink "$INSTALL_DIR/.gitconfig" "$HOME/.gitconfig"
+create_symlink "$INSTALL_DIR/.gitignore_global" "$HOME/.gitignore_global"
+create_symlink "$INSTALL_DIR/.aliases" "$HOME/.aliases"
+create_symlink "$INSTALL_DIR/.functions" "$HOME/.functions"
+create_symlink "$INSTALL_DIR/.exports" "$HOME/.exports"
+create_symlink "$INSTALL_DIR/nvim" "$HOME/.config/nvim"
 
-# Make all bin scripts executable
-print_info "Making bin scripts executable..."
-if [ -d "$DOTFILES_DIR/bin" ]; then
-    chmod +x "$DOTFILES_DIR"/bin/*
-    print_success "All bin scripts are now executable"
-fi
-
-# Make all demo scripts in docs executable
-print_info "Making demo scripts executable..."
-if [ -d "$DOTFILES_DIR/docs" ]; then
-    chmod +x "$DOTFILES_DIR"/docs/*.sh 2>/dev/null || true
-    print_success "All demo scripts are now executable"
-fi
+print_success "Dotfiles installed to $INSTALL_DIR"
 
 # ================================
-# 8. Install DevSecOps Tools
+# 9. Install DevSecOps Tools
 # ================================
 
 print_header "${WRENCH} Installing DevSecOps Tools"
@@ -314,7 +346,7 @@ if ! command -v hadolint &> /dev/null && [[ "$OS_TYPE" == "Mac" ]]; then
 fi
 
 # ================================
-# 9. Set Zsh as Default Shell
+# 10. Set Zsh as Default Shell
 # ================================
 
 print_header "${WRENCH} Setting Zsh as default shell"
@@ -328,7 +360,7 @@ else
 fi
 
 # ================================
-# 10. Finish
+# 11. Finish
 # ================================
 
 print_header "${ROCKET} Installation Complete!"
@@ -336,15 +368,26 @@ print_header "${ROCKET} Installation Complete!"
 echo ""
 print_success "Dotfiles have been successfully installed!"
 echo ""
+print_info "Installation location: $INSTALL_DIR"
+print_info "All scripts are executable and ready to use!"
+echo ""
 print_info "Next steps:"
-echo "  1. Restart your terminal or run: source ~/.zshrc"
-echo "  2. Run Powerlevel10k configuration: p10k configure"
-echo "  3. Install Tmux plugins: Open tmux and press Ctrl+A then I"
-echo "  4. Open Neovim to install plugins: nvim (plugins will auto-install)"
+echo "  1. Edit ~/.dotfiles/.env with your personal configuration"
+echo "  2. Restart your terminal or run: exec zsh"
+echo "  3. Run Powerlevel10k configuration: p10k configure"
+echo "  4. Install Tmux plugins: Open tmux and press Ctrl+A then I"
+echo "  5. Open Neovim to install plugins: nvim (plugins will auto-install)"
+echo ""
+print_info "Try these commands:"
+echo "  help                # Show help system"
+echo "  help docker         # Docker commands"
+echo "  help kubernetes     # Kubernetes commands"
+echo "  git-personal        # Switch to personal git profile"
+echo "  git-work            # Switch to work git profile"
 echo ""
 print_info "Additional configurations:"
 echo "  - Update .gitconfig with your name and email"
-echo "  - Configure GPG key for commit signing"
+echo "  - Configure GPG key for commit signing (optional)"
 echo "  - Install additional DevSecOps tools as needed"
 echo ""
 print_warning "Backup of old dotfiles: $backup_dir"

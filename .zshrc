@@ -61,7 +61,7 @@ source $ZSH/oh-my-zsh.sh
 # ================================
 
 # Load environment variables from .env file
-export DOTFILES_DIR="${HOME}/Desktop/dotfile"
+export DOTFILES_DIR="${HOME}/.dotfiles"
 
 # Add dotfiles bin to PATH
 export PATH="${DOTFILES_DIR}/bin:${PATH}"
