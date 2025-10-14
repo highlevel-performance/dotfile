@@ -19,7 +19,7 @@
 	defaultBranch = main
 
 [commit]
-	gpgsign = true
+	gpgsign = false
 	template = ~/.gitmessage
 
 [push]

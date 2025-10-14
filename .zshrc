@@ -61,7 +61,11 @@ source $ZSH/oh-my-zsh.sh
 # ================================
 
 # Load environment variables from .env file
-DOTFILES_DIR="${HOME}/Desktop/dotfile"
+export DOTFILES_DIR="${HOME}/Desktop/dotfile"
+
+# Add dotfiles bin to PATH
+export PATH="${DOTFILES_DIR}/bin:${PATH}"
+
 if [[ -f "${DOTFILES_DIR}/.env" ]]; then
     # Export all variables from .env (skip comments and empty lines)
     set -a

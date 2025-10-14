@@ -246,6 +246,20 @@ create_symlink "$DOTFILES_DIR/.functions" "$HOME/.functions"
 create_symlink "$DOTFILES_DIR/.exports" "$HOME/.exports"
 create_symlink "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
 
+# Make all bin scripts executable
+print_info "Making bin scripts executable..."
+if [ -d "$DOTFILES_DIR/bin" ]; then
+    chmod +x "$DOTFILES_DIR"/bin/*
+    print_success "All bin scripts are now executable"
+fi
+
+# Make all demo scripts in docs executable
+print_info "Making demo scripts executable..."
+if [ -d "$DOTFILES_DIR/docs" ]; then
+    chmod +x "$DOTFILES_DIR"/docs/*.sh 2>/dev/null || true
+    print_success "All demo scripts are now executable"
+fi
+
 # ================================
 # 8. Install DevSecOps Tools
 # ================================
