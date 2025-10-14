@@ -47,7 +47,14 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 print_header "${ROCKET} DevSecOps Dotfiles Installation"
 
-echo "Dotfiles directory: $DOTFILES_DIR"
+echo "Source directory: $DOTFILES_DIR"
+echo "Install directory: $HOME/.dotfiles"
+echo ""
+
+print_warning "IMPORTANT: After installation completes, you MUST:"
+print_warning "1. CLOSE this terminal completely"
+print_warning "2. Open a NEW terminal window"
+print_warning "3. Do NOT use 'exec zsh' or 'source ~/.zshrc'"
 echo ""
 
 # ================================
@@ -150,6 +157,10 @@ if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
     print_info "Installing Powerlevel10k theme..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     print_success "Powerlevel10k installed"
+    
+    # Skip P10k configuration wizard (user can run 'p10k configure' later)
+    touch ~/.p10k.zsh
+    print_info "P10k configuration skipped - run 'p10k configure' to customize"
 else
     print_success "Powerlevel10k already installed"
 fi
@@ -365,25 +376,45 @@ fi
 
 print_header "${ROCKET} Installation Complete!"
 
+# Clean zsh cache
+print_info "Cleaning zsh cache files..."
+rm -f ~/.zcompdump*
+rm -f ~/.zsh_history.LOCK
+rm -rf ~/.zsh/cache 2>/dev/null || true
+print_success "Cache cleaned"
+
 echo ""
 print_success "Dotfiles have been successfully installed!"
 echo ""
 print_info "Installation location: $INSTALL_DIR"
 print_info "All scripts are executable and ready to use!"
 echo ""
-print_info "Next steps:"
-echo "  1. Edit ~/.dotfiles/.env with your personal configuration"
-echo "  2. Restart your terminal or run: exec zsh"
-echo "  3. Run Powerlevel10k configuration: p10k configure"
-echo "  4. Install Tmux plugins: Open tmux and press Ctrl+A then I"
-echo "  5. Open Neovim to install plugins: nvim (plugins will auto-install)"
+
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║                                                              ║"
+echo "║  🔥 CRITICAL: TO COMPLETE INSTALLATION 🔥                   ║"
+echo "║                                                              ║"
+echo "║  1. CLOSE this terminal window completely                   ║"
+echo "║  2. Open a BRAND NEW terminal window                        ║"
+echo "║  3. Do NOT use 'exec zsh' or 'source ~/.zshrc'              ║"
+echo "║                                                              ║"
+echo "║  This is required to clear cached aliases!                  ║"
+echo "║                                                              ║"
+echo "╚══════════════════════════════════════════════════════════════╝"
 echo ""
-print_info "Try these commands:"
+
+print_info "After opening new terminal, try these commands:"
 echo "  help                # Show help system"
 echo "  help docker         # Docker commands"
 echo "  help kubernetes     # Kubernetes commands"
 echo "  git-personal        # Switch to personal git profile"
 echo "  git-work            # Switch to work git profile"
+echo ""
+print_info "Next steps:"
+echo "  1. Edit ~/.dotfiles/.env with your personal configuration"
+echo "  2. Run Powerlevel10k configuration: p10k configure"
+echo "  3. Install Tmux plugins: Open tmux and press Ctrl+A then I"
+echo "  4. Open Neovim to install plugins: nvim (plugins will auto-install)"
 echo ""
 print_info "Additional configurations:"
 echo "  - Update .gitconfig with your name and email"

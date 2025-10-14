@@ -204,6 +204,52 @@ else
     echo -e "  ${RED}✗${NC} Tmux not installed"
 fi
 
+# Check Help System
+echo ""
+echo -e "${BLUE}━━━ Help System & Scripts ━━━${NC}"
+
+DOTFILES_INSTALL="$HOME/.dotfiles"
+
+if [ -d "$DOTFILES_INSTALL" ]; then
+    echo -e "  ${GREEN}✓${NC} Dotfiles installed at $DOTFILES_INSTALL"
+    
+    if [ -f "$DOTFILES_INSTALL/bin/help" ]; then
+        if [ -x "$DOTFILES_INSTALL/bin/help" ]; then
+            echo -e "  ${GREEN}✓${NC} help script is executable"
+            
+            # Test if help command works
+            if "$DOTFILES_INSTALL/bin/help" >/dev/null 2>&1; then
+                echo -e "  ${GREEN}✓${NC} help command works"
+            else
+                echo -e "  ${RED}✗${NC} help command exists but fails to run"
+            fi
+        else
+            echo -e "  ${RED}✗${NC} help script exists but is not executable"
+            echo -e "      Run: chmod +x $DOTFILES_INSTALL/bin/help"
+        fi
+    else
+        echo -e "  ${RED}✗${NC} help script not found"
+    fi
+    
+    # Check if bin is in PATH
+    if echo "$PATH" | grep -q "$DOTFILES_INSTALL/bin"; then
+        echo -e "  ${GREEN}✓${NC} $DOTFILES_INSTALL/bin is in PATH"
+    else
+        echo -e "  ${YELLOW}⚠${NC} $DOTFILES_INSTALL/bin not in PATH"
+    fi
+    
+    # Check DOTFILES_DIR variable
+    if [ "$DOTFILES_DIR" = "$DOTFILES_INSTALL" ]; then
+        echo -e "  ${GREEN}✓${NC} DOTFILES_DIR correctly set to $DOTFILES_INSTALL"
+    else
+        echo -e "  ${RED}✗${NC} DOTFILES_DIR is '$DOTFILES_DIR', should be '$DOTFILES_INSTALL'"
+        echo -e "      ${YELLOW}Close terminal and open a NEW one!${NC}"
+    fi
+else
+    echo -e "  ${RED}✗${NC} Dotfiles not installed at $DOTFILES_INSTALL"
+    echo -e "      Run: ./setup.sh"
+fi
+
 # Summary
 echo ""
 echo -e "${CYAN}╔════════════════════════════════════════════════════════╗${NC}"
@@ -213,7 +259,15 @@ echo -e "${CYAN}╚════════════════════�
 ALL_GOOD=true
 
 # Check critical components
-if [ ! -f ~/.zshrc ] || [ ! -f ~/.gitconfig ] || [ ! -f ~/Desktop/dotfile/bin/git-profile ]; then
+if [ ! -f ~/.zshrc ] || [ ! -f ~/.gitconfig ]; then
+    ALL_GOOD=false
+fi
+
+if [ ! -f "$DOTFILES_INSTALL/bin/help" ] || [ ! -x "$DOTFILES_INSTALL/bin/help" ]; then
+    ALL_GOOD=false
+fi
+
+if [ "$DOTFILES_DIR" != "$DOTFILES_INSTALL" ]; then
     ALL_GOOD=false
 fi
 

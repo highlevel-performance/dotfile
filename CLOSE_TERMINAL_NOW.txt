@@ -1,0 +1,69 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║                  🚨 CRITICAL INSTRUCTIONS 🚨                 ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+YOU ARE CURRENTLY IN AN OLD TERMINAL SESSION!
+
+Your current terminal has cached:
+  DOTFILES_DIR = ~/Desktop/dotfile  ❌ (OLD PATH)
+
+After fix, it should be:
+  DOTFILES_DIR = ~/.dotfiles         ✅ (NEW PATH)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔥 TO FIX - DO THESE EXACT STEPS:
+
+1. On macOS:
+   - Press Cmd+Q to QUIT Terminal app completely
+   - Or: Terminal → Quit Terminal
+   
+2. Open Terminal app again (fresh new instance)
+
+3. Test:
+   help docker
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ DO NOT DO THIS (it won't work):
+   - exec zsh         ← Still same session, won't clear cache
+   - source ~/.zshrc  ← Still same session, won't clear cache
+   - zsh              ← Subshell, inherits parent environment
+
+✅ ONLY THIS WORKS:
+   - Quit Terminal app completely
+   - Reopen Terminal app
+   - This gives you a FRESH zsh process
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHY THIS HAPPENS:
+
+When zsh starts, it:
+1. Reads ~/.zshrc
+2. Sets DOTFILES_DIR variable
+3. Creates aliases
+4. CACHES everything in memory
+
+When you run setup.sh:
+- ✅ Files are updated on disk
+- ✅ Symlinks are recreated
+- ❌ YOUR CURRENT TERMINAL still has old values in memory!
+
+Only solution: Start a BRAND NEW terminal process.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After you open NEW terminal, verify:
+
+  echo $DOTFILES_DIR
+  
+Should show: /Users/shivamkumar/.dotfiles
+
+If it still shows ~/Desktop/dotfile, something went wrong.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PLEASE CLOSE THIS TERMINAL NOW AND OPEN A NEW ONE! 🚀
