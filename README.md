@@ -1,58 +1,140 @@
+<div align="center">
+
 # 🚀 DevSecOps Dotfiles
 
-A comprehensive, production-ready dotfiles configuration tailored for DevSecOps engineers. This setup includes configurations for zsh, tmux, Neovim (LazyVim), git, and various DevSecOps tools.
+### *Professional dotfiles for DevSecOps Engineers*
 
-## ✨ Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Shell: Zsh](https://img.shields.io/badge/Shell-Zsh-1f425f.svg)](https://www.zsh.org/)
+[![OS: macOS](https://img.shields.io/badge/OS-macOS-blue.svg)](https://www.apple.com/macos/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-### 🔧 Core Tools
-- **Zsh** with Oh My Zsh and Powerlevel10k theme
-- **Tmux** with custom keybindings and DevSecOps sessions
-- **Neovim** with LazyVim for modern IDE experience
-- **Git** with security-focused aliases and GPG signing
+A comprehensive, production-ready dotfiles configuration tailored for DevSecOps engineers. This setup includes configurations for **Zsh**, **Tmux**, **Neovim (LazyVim)**, **Git**, and various DevSecOps tools with **100+ aliases**, custom functions, and a built-in help system.
 
-### 🛠️ DevSecOps Tools Support
-- **Container Technologies**: Docker, Docker Compose, Podman
+[Features](#-features) • [Quick Start](#-quick-start) • [Installation](#-installation) • [Documentation](docs/README.md) • [Security](#-security-features)
+
+</div>
+
+---
+
+## ✨ Key Features
+
+<table>
+<tr>
+<td width="50%">
+
+### 🔧 **Core Shell**
+- **Zsh** with Oh My Zsh
+- **Powerlevel10k** theme
+- **35+ plugins** (git, docker, kubectl, terraform, aws, azure, gcloud)
+- **100+ aliases** for DevSecOps workflows
+- **20+ custom functions**
+- **Auto-suggestions** & **syntax highlighting**
+
+### 🎨 **Modern CLI Tools**
+- `bat` → Better cat with syntax highlighting
+- `eza` → Modern ls replacement
+- `ripgrep` → Blazing fast search
+- `fd` → Simple, fast find alternative
+- `fzf` → Fuzzy finder
+- `delta` → Beautiful git diffs
+- `btop` → System monitor
+- `procs` → Modern ps replacement
+- `zoxide` → Smart cd command
+
+</td>
+<td width="50%">
+
+### 🛠️ **DevSecOps Tools**
+- **Containers**: Docker, Docker Compose
 - **Kubernetes**: kubectl, helm, kubectx, kubens
-- **Infrastructure as Code**: Terraform, Ansible, Packer
-- **Cloud Providers**: AWS CLI, Azure CLI, GCP CLI
-- **Security Scanning**: Trivy, Grype, Snyk, tfsec, Hadolint
-- **Secret Management**: SOPS, Vault, git-secrets
-- **CI/CD**: Jenkins, GitLab CI, GitHub Actions
+- **IaC**: Terraform, tfsec
+- **Cloud**: AWS CLI, Azure CLI, GCP CLI
+- **Security**: Trivy, Hadolint, git-secrets
+- **Monitoring**: btop, procs, dust, duf
 
-### 🎨 Modern CLI Tools
-- `bat` - Better cat with syntax highlighting
-- `eza` - Modern replacement for ls
-- `ripgrep` (rg) - Fast recursive search
-- `fd` - Simple, fast alternative to find
-- `fzf` - Fuzzy finder
-- `delta` - Better git diff
-- `btop` - Modern system monitor
-- `procs` - Modern replacement for ps
-- `dust` - Better du
-- `duf` - Better df
+### � **Custom Features**
+- 📚 **Built-in help system** (`help` command)
+- 🔐 **Git profile management** (personal/work)
+- 🔑 **Authenticated GitHub cloning**
+- 🛡️ **Security scanner** (`scan-secrets`)
+- ⚙️ **Environment-driven config** (`.env`)
+- 🎭 **Tmux session management**
+
+</td>
+</tr>
+</table>
+
+## 🌟 What Makes This Different?
+
+| Feature | This Dotfiles | Typical Dotfiles |
+|---------|--------------|------------------|
+| **Help System** | ✅ Built-in `help` command with 12 topics | ❌ Manual documentation only |
+| **Git Profiles** | ✅ Easy personal/work switching | ❌ Manual configuration |
+| **Security** | ✅ Secret scanner + .env isolation | ⚠️ Basic or none |
+| **DevSecOps Focus** | ✅ 100+ tailored aliases | ⚠️ Generic aliases |
+| **Documentation** | ✅ 22 guides + demos | ⚠️ Basic README |
+| **Environment-Driven** | ✅ All config from .env | ❌ Hardcoded values |
+| **Maintained** | ✅ Active & tested | ⚠️ Often abandoned |
+
+---
 
 ## 📋 Prerequisites
 
-- macOS or Linux
-- Git
-- Curl or Wget
-- Terminal with true color support
+- **Operating System**: macOS (primary) or Linux
+- **Git**: Version 2.0+
+- **Curl or Wget**: For downloading dependencies
+- **Terminal**: iTerm2, Alacritty, or any terminal with true color support
+- **Optional**: Nerd Font (for icons in Powerlevel10k)
 
-## 🚀 Installation
-
-### Quick Install
+## ⚡ Quick Start
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/dotfiles.git ~/Desktop/dotfile
-cd ~/Desktop/dotfile
+git clone https://github.com/highlevel-performance/dotfile.git ~/dotfiles
+cd ~/dotfiles
 
-# Make setup script executable
-chmod +x setup.sh
+# Copy and configure environment
+cp .env.example .env
+# Edit .env with your personal settings
 
-# Run the installation
+# Run the automated installer
 ./setup.sh
+
+# Start using
+help              # Show available commands
+help git          # Git-specific help
+git-personal      # Switch to personal git profile
 ```
+
+## 🚀 Installation
+
+### Automated Installation (Recommended)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/highlevel-performance/dotfile.git ~/dotfiles
+cd ~/dotfiles
+
+# 2. Setup environment variables
+cp .env.example .env
+nano .env  # or vim/code - add your personal information
+
+# 3. Run the installer
+./setup.sh
+
+# 4. Restart your terminal or source
+source ~/.zshrc
+```
+
+The installer will:
+- ✅ Install Homebrew (if not present)
+- ✅ Install Oh My Zsh with Powerlevel10k theme
+- ✅ Install all required CLI tools
+- ✅ Setup Tmux with TPM
+- ✅ Configure Neovim with LazyVim
+- ✅ Create symlinks for all config files
+- ✅ Setup git profiles (personal/work)
 
 ### Manual Installation
 
@@ -84,28 +166,44 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # 6. Restart your terminal
 ```
 
-## 📁 Structure
+## 📁 Repository Structure
 
 ```
 dotfile/
-├── .zshrc                  # Zsh configuration
-├── .tmux.conf              # Tmux configuration
-├── .gitconfig              # Git configuration
-├── .gitignore_global       # Global gitignore
-├── .aliases                # Command aliases
-├── .functions              # Custom shell functions
-├── .exports                # Environment variables
-├── setup.sh                # Installation script
-├── README.md               # This file
-└── nvim/                   # Neovim configuration
-    ├── init.lua            # Main config
-    └── lua/
-        ├── config/
-        │   ├── options.lua
-        │   ├── keymaps.lua
-        │   └── autocmds.lua
-        └── plugins/
-            └── devsecops.lua
+├── 📄 Configuration Files
+│   ├── .zshrc                  # Zsh configuration
+│   ├── .tmux.conf              # Tmux configuration
+│   ├── .gitconfig              # Git configuration (no secrets!)
+│   ├── .aliases                # 100+ DevSecOps aliases
+│   ├── .functions              # 20+ custom shell functions
+│   ├── .exports                # Environment variables
+│   └── .env.example            # Environment template (copy to .env)
+│
+├── 🔧 Scripts (bin/)
+│   ├── help                    # Interactive help system
+│   ├── scan-secrets            # Security scanner
+│   ├── git-profile             # Git profile switcher
+│   ├── git-clone-auth          # Authenticated cloning
+│   └── sync-*                  # Sync commands
+│
+├── 📚 Documentation (docs/)
+│   ├── README.md               # Documentation index
+│   ├── INSTALLATION.md         # Detailed setup guide
+│   ├── GIT_PROFILES.md         # Git profile management
+│   ├── GIT_AUTH_GUIDE.md       # Authentication setup
+│   ├── SECURITY_AUDIT.md       # Security report
+│   └── *.sh                    # Demo scripts
+│
+├── 🎨 Neovim (nvim/)
+│   ├── init.lua                # Main config
+│   └── lua/
+│       ├── config/             # Core settings
+│       └── plugins/            # DevSecOps plugins
+│
+└── 🛠️ Setup Scripts
+    ├── setup.sh                # Automated installer
+    ├── status.sh               # Status checker
+    └── uninstall.sh            # Clean uninstaller
 ```
 
 ## 🎯 Post-Installation
@@ -183,63 +281,89 @@ brew install awscli azure-cli
 | `K` | Show hover documentation |
 | `Space ca` | Code actions |
 
-## 📦 DevSecOps Aliases
+## 📦 Popular Aliases & Commands
 
-### Docker
+<table>
+<tr>
+<td width="25%">
 
+### 🐳 **Docker**
 ```bash
-d        # docker
-dc       # docker-compose
-dps      # docker ps
-dpsa     # docker ps -a
-di       # docker images
-dex      # docker exec -it
-dlogs    # docker logs -f
+d         # docker
+dc        # docker-compose
+dps       # docker ps
+di        # docker images
+dex       # docker exec -it
+dlogs     # docker logs -f
+drm       # docker rm
+drmi      # docker rmi
 ```
 
-### Kubernetes
+</td>
+<td width="25%">
 
+### ☸️ **Kubernetes**
 ```bash
-k        # kubectl
-kgp      # kubectl get pods
-kgs      # kubectl get services
-kgn      # kubectl get nodes
-kl       # kubectl logs
-klf      # kubectl logs -f
-kex      # kubectl exec -it
+k         # kubectl
+kgp       # get pods
+kgs       # get services
+kgd       # get deployments
+kdp       # describe pod
+kl        # logs
+klf       # logs -f
+kex       # exec -it
 ```
 
-### Terraform
+</td>
+<td width="25%">
 
+### 🏗️ **Terraform**
 ```bash
-tf       # terraform
-tfi      # terraform init
-tfp      # terraform plan
-tfa      # terraform apply
-tfd      # terraform destroy
-tfv      # terraform validate
+tf        # terraform
+tfi       # init
+tfp       # plan
+tfa       # apply
+tfd       # destroy
+tfv       # validate
+tff       # fmt
+tfshow    # show
 ```
 
-### Git
+</td>
+<td width="25%">
 
+### 🔀 **Git**
 ```bash
-gs       # git status
-ga       # git add
-gc       # git commit
-gp       # git push
-gpl      # git pull
-gco      # git checkout
-glog     # git log (pretty)
+gs        # status
+ga        # add
+gc        # commit
+gp        # push
+gpl       # pull
+gco       # checkout
+glog      # pretty log
+gd        # diff
 ```
 
-### Security
+</td>
+</tr>
+</table>
+
+### 🔍 Discovery with Help System
+
+Don't memorize all aliases! Use the built-in help:
 
 ```bash
-trivy-fs         # Scan file system
-tfsec-scan       # Scan Terraform
-grype-scan       # Scan with Grype
-gitleaks-scan    # Scan for secrets
+help                    # Show main help menu
+help git                # Git commands
+help kubernetes         # K8s commands
+help docker             # Docker commands
+help terraform          # Terraform commands
+help aws                # AWS CLI commands
+help security           # Security tools
+help all | grep <term>  # Search all commands
 ```
+
+**Total: 100+ aliases across 12 categories!** See [docs/HELP_QUICK_REF.sh](docs/HELP_QUICK_REF.sh) for complete list.
 
 ## 🔍 Custom Functions
 
@@ -282,23 +406,49 @@ genpass [length]     # Generate random password
 
 ## 🔒 Security Features
 
-### Git Security
+<table>
+<tr>
+<td width="33%">
 
-- Automatic commit signing with GPG
+### 🛡️ **Protection Layers**
+- 📝 `.gitignore` with 80+ patterns
+- 🔍 `scan-secrets` tool
+- 🔐 `.env` file isolation
+- ❌ No hardcoded credentials
+- 📋 Comprehensive documentation
+
+</td>
+<td width="33%">
+
+### 🔐 **Git Security**
+- Profile separation (personal/work)
+- Token-based authentication
 - `.gitignore_global` for sensitive files
-- Aliases for scanning commit history
-- Integration with git-secrets and gitleaks
+- Optional GPG commit signing
+- git-secrets integration
 
-### Sensitive File Detection
+</td>
+<td width="33%">
 
-Neovim will alert when opening files that may contain secrets:
-- `*.pem`, `*.key`
-- Files with "secret", "password" in name
-- `.env` files
+### 🎯 **Best Practices**
+- Environment-driven configuration
+- Sensitive file detection in Neovim
+- History filtering for secrets
+- Pre-commit security scanning
+- Automated secret rotation guides
 
-### History Filtering
+</td>
+</tr>
+</table>
 
-Commands containing sensitive keywords are automatically excluded from shell history.
+### Security Commands
+
+```bash
+./bin/scan-secrets      # Scan for exposed secrets
+help security           # Show security-related commands
+git-personal           # Switch to personal git profile
+git-work               # Switch to work git profile
+```
 
 ## 🛠️ Customization
 
@@ -400,41 +550,189 @@ Ensure your terminal supports true color:
 
 ## 📚 Documentation
 
-All detailed documentation is in the `docs/` folder:
+Comprehensive documentation is available in the [`docs/`](docs/) folder:
 
-- **[Installation Guide](docs/INSTALLATION.md)** - Complete setup instructions
-- **[Git Profiles](docs/GIT_PROFILES.md)** - Manage personal/work profiles
-- **[Git Authentication](docs/GIT_AUTH_GUIDE.md)** - Setup authenticated cloning
-- **[Help System](docs/HELP_ENV_GUIDE.md)** - Using help and environment variables
-- **[Security Audit](docs/SECURITY_AUDIT.md)** - Security status and protections
+<table>
+<tr>
+<td width="50%">
 
-### Quick Start
+### 📖 **Guides**
+- 📘 [Installation Guide](docs/INSTALLATION.md) - Detailed setup
+- 🔀 [Git Profiles](docs/GIT_PROFILES.md) - Personal/work separation
+- 🔑 [Git Authentication](docs/GIT_AUTH_GUIDE.md) - Secure cloning
+- 🌍 [Environment Setup](docs/HELP_ENV_GUIDE.md) - `.env` configuration
+- 🔒 [Security Audit](docs/SECURITY_AUDIT.md) - Security status
+- 📝 [What Changed](docs/WHAT_CHANGED.md) - Recent updates
+
+</td>
+<td width="50%">
+
+### 🎬 **Demo Scripts**
 ```bash
-./docs/QUICKSTART.sh           # Quick demo
-./docs/QUICK_UPLOAD.sh         # Upload to GitHub guide
-./bin/scan-secrets             # Security scan
-help                           # Show help system
+./docs/QUICKSTART.sh        # Quick feature demo
+./docs/FEATURE_DEMO.sh      # Detailed demos
+./docs/QUICK_UPLOAD.sh      # GitHub upload guide
+./docs/STRUCTURE.sh         # View structure
 ```
 
-See [docs/README.md](docs/README.md) for complete documentation index.
+### 💡 **Quick Reference**
+```bash
+help                        # Main help
+cat docs/HELP_QUICK_REF.sh  # All commands
+```
 
-## 🤝 Contributing
+</td>
+</tr>
+</table>
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
+📑 **Full Documentation Index:** [docs/README.md](docs/README.md)
 
-## 📄 License
+## 🎯 Usage Examples
 
-MIT License - feel free to use and modify as needed.
+### Switching Git Profiles
+```bash
+git-personal              # Switch to personal profile
+git-work                  # Switch to work profile
+git-status                # Check current profile
+```
 
-## 🙏 Acknowledgments
+### Authenticated GitHub Cloning
+```bash
+gclone user/repo          # Clone with authentication
+# or
+git-clone-auth user/repo  # Same, with auto-token injection
+```
 
-- [Oh My Zsh](https://ohmyz.sh/)
-- [LazyVim](https://www.lazyvim.org/)
-- [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm)
-- The DevSecOps community
+### Security Scanning
+```bash
+./bin/scan-secrets        # Scan for exposed secrets
+help security             # Show security commands
+```
+
+### Environment Management
+```bash
+sync-all                  # Sync profiles & tokens from .env
+sync-profiles             # Sync git profiles only
+sync-tokens               # Sync GitHub tokens only
+```
 
 ---
 
-**Made with ❤️ for DevSecOps Engineers**
+## 🐛 Troubleshooting
 
-For questions or issues, please open an issue on GitHub.
+<details>
+<summary><b>Zsh plugins not loading</b></summary>
+
+```bash
+rm -rf ~/.zcompdump*
+source ~/.zshrc
+```
+</details>
+
+<details>
+<summary><b>Tmux plugins not working</b></summary>
+
+```bash
+# Reinstall TPM
+rm -rf ~/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+# Install plugins: Ctrl+A then I (capital i)
+```
+</details>
+
+<details>
+<summary><b>Neovim plugins not installing</b></summary>
+
+```bash
+# Clean and reinstall
+rm -rf ~/.local/share/nvim
+nvim  # Will trigger lazy.nvim installation
+```
+</details>
+
+<details>
+<summary><b>Colors not working properly</b></summary>
+
+Ensure your terminal supports true color:
+- **macOS**: iTerm2 or Alacritty (recommended)
+- **Linux**: Alacritty, Kitty, or Terminator
+
+Check true color support:
+```bash
+echo $COLORTERM  # Should output: truecolor or 24bit
+```
+</details>
+
+<details>
+<summary><b>GPG signing errors</b></summary>
+
+```bash
+# Disable GPG signing if not needed
+git config --global commit.gpgsign false
+
+# Or install GPG
+brew install gpg
+gpg --full-generate-key
+git config --global user.signingkey YOUR_KEY_ID
+```
+</details>
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+You are free to:
+- ✅ Use commercially
+- ✅ Modify
+- ✅ Distribute
+- ✅ Private use
+
+---
+
+## 🙏 Acknowledgments
+
+Special thanks to these amazing projects:
+
+- [Oh My Zsh](https://ohmyz.sh/) - Zsh framework
+- [Powerlevel10k](https://github.com/romkatv/powerlevel10k) - Zsh theme
+- [LazyVim](https://www.lazyvim.org/) - Neovim configuration
+- [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) - Tmux plugins
+- [Homebrew](https://brew.sh/) - Package manager
+- The entire DevSecOps community
+
+---
+
+## 📊 Stats
+
+![GitHub stars](https://img.shields.io/github/stars/highlevel-performance/dotfile?style=social)
+![GitHub forks](https://img.shields.io/github/forks/highlevel-performance/dotfile?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/highlevel-performance/dotfile?style=social)
+
+---
+
+<div align="center">
+
+### Made with ❤️ for DevSecOps Engineers
+
+**Questions? Issues?** → [Open an issue](https://github.com/highlevel-performance/dotfile/issues)
+
+**Want to contribute?** → [Submit a PR](https://github.com/highlevel-performance/dotfile/pulls)
+
+⭐ **Star this repo if you find it helpful!** ⭐
+
+</div>
