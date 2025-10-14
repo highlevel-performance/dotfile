@@ -313,7 +313,7 @@ fi
 # Help System
 # ================================
 # Alias for the help command
-alias help='${DOTFILES_DIR}/bin/help'
+alias help="${DOTFILES_DIR}/bin/help"
 alias h='help'
 
 # Quick help shortcuts
@@ -325,12 +325,12 @@ alias help-tf='help terraform'
 # ================================
 # Environment & Configuration Management
 # ================================
-alias edit-env='${EDITOR:-nvim} ${DOTFILES_DIR}/.env'
+alias edit-env="${EDITOR:-nvim} ${DOTFILES_DIR}/.env"
 alias reload-env='source ~/.zshrc'
-alias sync-profiles='${DOTFILES_DIR}/bin/sync-git-profiles'
-alias sync-tokens='${DOTFILES_DIR}/bin/sync-github-tokens'
+alias sync-profiles="${DOTFILES_DIR}/bin/sync-git-profiles"
+alias sync-tokens="${DOTFILES_DIR}/bin/sync-github-tokens"
 alias sync-all='sync-profiles && sync-tokens'
-alias dotfiles='cd ${DOTFILES_DIR}'
+alias dotfiles="cd ${DOTFILES_DIR}"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
