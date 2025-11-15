@@ -129,33 +129,29 @@ require("lazy").setup({
   },
 })
 
--- Override lazy.nvim's open function immediately after setup
-vim.defer_fn(function()
-  local lazy = require("lazy")
-  if lazy and lazy.open then
-    local original_open = lazy.open
-    lazy.open = function(opts)
-      -- Only show UI if explicitly requested with show=true
-      if opts and opts.show == true then
-        return original_open(opts)
-      end
-      -- Don't show UI automatically
-      return nil
+-- CRITICAL: Override lazy.nvim's open function IMMEDIATELY after setup
+-- This must happen before LazyVim checks for pending tasks
+local lazy = require("lazy")
+if lazy and lazy.open then
+  local original_open = lazy.open
+  lazy.open = function(opts)
+    -- Only show UI if explicitly requested with show=true
+    if opts and opts.show == true then
+      return original_open(opts)
     end
+    -- Don't show UI automatically - return nil to prevent opening
+    return nil
   end
-end, 50)
+end
 
--- Prevent LazyVim from showing lazy UI on pending tasks
-vim.api.nvim_create_autocmd("VimEnter", {
+-- Patch LazyVim's pending tasks detection to prevent UI from opening
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyLoad",
   callback = function()
-    -- Override LazyVim's pending tasks check
-    vim.g.lazyvim_pending_tasks = false
-    
-    -- Install missing plugins silently in background
-    vim.defer_fn(function()
+    -- Override immediately when lazy loads
+    vim.schedule(function()
       local lazy = require("lazy")
-      if lazy then
-        -- Ensure open function is overridden
+      if lazy and lazy.open then
         local original_open = lazy.open
         lazy.open = function(opts)
           if opts and opts.show == true then
@@ -163,14 +159,60 @@ vim.api.nvim_create_autocmd("VimEnter", {
           end
           return nil
         end
-        
-        -- Install missing plugins silently
+      end
+    end)
+  end,
+  once = true,
+})
+
+-- Prevent LazyVim from showing lazy UI on pending tasks
+-- Override BEFORE LazyVim can check for pending tasks
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyVimStarted",
+  callback = function()
+    -- Ensure open function is still overridden
+    local lazy = require("lazy")
+    if lazy and lazy.open then
+      local original_open = lazy.open
+      lazy.open = function(opts)
+        if opts and opts.show == true then
+          return original_open(opts)
+        end
+        return nil
+      end
+    end
+  end,
+  once = true,
+})
+
+-- Also override on VimEnter to catch any late checks
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    -- Override LazyVim's pending tasks check
+    vim.g.lazyvim_pending_tasks = false
+    
+    -- Ensure open function is overridden
+    local lazy = require("lazy")
+    if lazy and lazy.open then
+      local original_open = lazy.open
+      lazy.open = function(opts)
+        if opts and opts.show == true then
+          return original_open(opts)
+        end
+        return nil
+      end
+    end
+    
+    -- Install missing plugins silently in background
+    vim.defer_fn(function()
+      local lazy = require("lazy")
+      if lazy then
         local stats = lazy.stats()
         if stats.missing > 0 then
           lazy.install({ wait = false, show = false })
         end
       end
-    end, 200)
+    end, 100)
   end,
   once = true,
 })

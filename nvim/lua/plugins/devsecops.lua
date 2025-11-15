@@ -56,24 +56,25 @@ return {
     end,
   },
 
-  -- REST client
-  {
-    "rest-nvim/rest.nvim",
-    ft = "http",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("rest-nvim").setup({
-        result_split_horizontal = false,
-        result_split_in_place = false,
-        skip_ssl_verification = false,
-        encode_url = true,
-        highlight = {
-          enabled = true,
-          timeout = 150,
-        },
-      })
-    end,
-  },
+  -- REST client (temporarily disabled to prevent build issues)
+  -- Uncomment when needed: rest.nvim requires luarocks and builds on install
+  -- {
+  --   "rest-nvim/rest.nvim",
+  --   ft = "http",
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  --   config = function()
+  --     require("rest-nvim").setup({
+  --       result_split_horizontal = false,
+  --       result_split_in_place = false,
+  --       skip_ssl_verification = false,
+  --       encode_url = true,
+  --       highlight = {
+  --         enabled = true,
+  --         timeout = 150,
+  --       },
+  --     })
+  --   end,
+  -- },
 
   -- YAML companion (K8s schema validation)
   {
