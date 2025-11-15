@@ -208,7 +208,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
       local lazy = require("lazy")
       if lazy then
         local stats = lazy.stats()
-        if stats.missing > 0 then
+        if stats and stats.missing and stats.missing > 0 then
           lazy.install({ wait = false, show = false })
         end
       end

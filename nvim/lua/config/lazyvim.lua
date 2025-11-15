@@ -43,7 +43,7 @@ vim.api.nvim_create_autocmd("User", {
     
     -- Install missing plugins silently
     local stats = lazy.stats()
-    if stats.missing > 0 then
+    if stats and stats.missing and stats.missing > 0 then
       lazy.install({ wait = false, show = false })
     end
   end,
