@@ -23,6 +23,9 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Prevent LazyVim from showing lazy UI automatically
+vim.g.lazyvim_pending_tasks = false
+
 -- Load LazyVim with optimized settings
 require("lazy").setup({
   spec = {
@@ -70,6 +73,27 @@ require("lazy").setup({
     enabled = false, -- Disable auto-check for changes (faster startup)
     notify = false,
   },
+  ui = {
+    -- Don't show lazy UI automatically
+    backdrop = 100,
+    border = "rounded",
+    browser = nil, -- Disable browser
+    custom_keys = nil,
+    icons = {
+      cmd = " ",
+      config = " ",
+      event = " ",
+      ft = " ",
+      init = " ",
+      keys = " ",
+      plugin = " ",
+      runtime = " ",
+      source = " ",
+      start = " ",
+      task = " ",
+      lazy = " ",
+    },
+  },
   performance = {
     rtp = {
       disabled_plugins = {
@@ -82,6 +106,23 @@ require("lazy").setup({
       },
     },
   },
+})
+
+-- Prevent lazy UI from opening automatically on startup
+-- Install plugins silently in background without showing UI
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    local lazy = require("lazy")
+    local stats = lazy.stats()
+    if stats.missing > 0 or stats.new > 0 then
+      -- Install/update plugins silently in background
+      vim.schedule(function()
+        lazy.install({ wait = false, show = false })
+      end)
+    end
+  end,
+  once = true,
 })
 
 -- Load keymaps and autocmds after lazy setup

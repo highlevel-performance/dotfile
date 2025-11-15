@@ -43,13 +43,8 @@ return {
   },
 
   -- Security scanning integrations
-  {
-    "https://gitlab.com/itaranto/plantuml.nvim",
-    ft = "plantuml",
-    config = function()
-      require("plantuml").setup()
-    end,
-  },
+  -- Note: plantuml.nvim removed due to git-lfs dependency issues
+  -- If needed, install git-lfs first: brew install git-lfs
 
   -- Markdown preview
   {
