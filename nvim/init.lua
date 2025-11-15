@@ -72,8 +72,8 @@ require("lazy").setup({
     -- UI enhancements
     { import = "lazyvim.plugins.extras.ui.mini-animate" },
     
-    -- Coding
-    { import = "lazyvim.plugins.extras.coding.copilot" },
+    -- Coding (copilot is already included in custom plugins)
+    -- { import = "lazyvim.plugins.extras.coding.copilot" }, -- This extra doesn't exist
     
     -- Import custom plugins
     { import = "plugins" },
@@ -206,9 +206,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
     -- Install missing plugins silently in background
     vim.defer_fn(function()
       local lazy = require("lazy")
-      if lazy then
-        local stats = lazy.stats()
-        if stats and stats.missing and stats.missing > 0 then
+      if lazy and lazy.stats then
+        local ok, stats = pcall(lazy.stats)
+        if ok and stats and type(stats.missing) == "number" and stats.missing > 0 then
           lazy.install({ wait = false, show = false })
         end
       end

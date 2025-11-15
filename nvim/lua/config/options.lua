@@ -57,7 +57,7 @@ opt.modeline = false -- Disable modeline for security
 opt.secure = true -- Secure mode for reading .vimrc in current dir
 
 -- Performance
-opt.lazyredraw = true -- Faster scrolling
+opt.lazyredraw = false -- Disabled: causes issues with Noice and other plugins
 opt.synmaxcol = 240 -- Max column for syntax highlight
 
 -- Wildmenu

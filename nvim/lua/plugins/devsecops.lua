@@ -179,7 +179,7 @@ return {
     end,
   },
 
-  -- Indent guides
+  -- Indent guides (version 3 compatible)
   {
     "lukas-reineke/indent-blankline.nvim",
     event = { "BufReadPost", "BufNewFile" },
@@ -189,5 +189,11 @@ return {
       show_trailing_blankline_indent = false,
       show_current_context = false,
     },
+    config = function()
+      require("ibl").setup({
+        indent = { char = "│" },
+        scope = { enabled = false },
+      })
+    end,
   },
 }
