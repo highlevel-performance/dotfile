@@ -2,6 +2,9 @@
 -- DevSecOps LazyVim Configuration
 -- ================================
 
+-- Load essential options first (before plugins) so editor is usable immediately
+require("config.options")
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -20,7 +23,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Load LazyVim
+-- Load LazyVim with optimized settings
 require("lazy").setup({
   spec = {
     -- LazyVim core
@@ -52,11 +55,21 @@ require("lazy").setup({
     { import = "plugins" },
   },
   defaults = {
-    lazy = false,
+    lazy = true, -- Enable lazy loading for faster startup
     version = false,
   },
-  install = { colorscheme = { "tokyonight", "habamax" } },
-  checker = { enabled = true },
+  install = { 
+    colorscheme = { "tokyonight", "habamax" },
+    missing = true, -- Auto-install missing plugins
+  },
+  checker = { 
+    enabled = false, -- Disable startup checker (run manually with :Lazy check)
+    notify = false, -- Don't notify on startup
+  },
+  change_detection = {
+    enabled = false, -- Disable auto-check for changes (faster startup)
+    notify = false,
+  },
   performance = {
     rtp = {
       disabled_plugins = {
@@ -65,12 +78,12 @@ require("lazy").setup({
         "tohtml",
         "tutor",
         "zipPlugin",
+        "netrwPlugin", -- Use neo-tree instead
       },
     },
   },
 })
 
--- Load options, keymaps, and autocmds
-require("config.options")
+-- Load keymaps and autocmds after lazy setup
 require("config.keymaps")
 require("config.autocmds")

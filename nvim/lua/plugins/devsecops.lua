@@ -122,6 +122,7 @@ return {
   {
     "akinsho/toggleterm.nvim",
     version = "*",
+    keys = { "<c-\\>" }, -- Only load when key is pressed
     config = function()
       require("toggleterm").setup({
         size = 20,
