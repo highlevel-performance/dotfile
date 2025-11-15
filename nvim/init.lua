@@ -26,6 +26,27 @@ vim.g.maplocalleader = " "
 -- Prevent LazyVim from showing lazy UI automatically
 vim.g.lazyvim_pending_tasks = false
 
+-- Override lazy.nvim's open function to prevent automatic UI display
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyLoad",
+  callback = function()
+    vim.schedule(function()
+      local lazy = require("lazy")
+      if lazy and lazy.open then
+        local original_open = lazy.open
+        lazy.open = function(opts)
+          -- Only show UI if explicitly requested
+          if opts and opts.show == true then
+            return original_open(opts)
+          end
+          return nil
+        end
+      end
+    end)
+  end,
+  once = true,
+})
+
 -- Load LazyVim with optimized settings
 require("lazy").setup({
   spec = {
@@ -108,42 +129,48 @@ require("lazy").setup({
   },
 })
 
--- Prevent lazy UI from opening automatically on startup
--- Override lazy.nvim to not show UI automatically
-vim.api.nvim_create_autocmd("User", {
-  pattern = "LazyVimStarted",
-  callback = function()
-    -- Clear any pending tasks that might trigger UI
-    vim.g.lazyvim_pending_tasks = false
-  end,
-  once = true,
-})
-
--- Install plugins silently in background without showing UI
-vim.api.nvim_create_autocmd("User", {
-  pattern = "VeryLazy",
-  callback = function()
-    local lazy = require("lazy")
-    local stats = lazy.stats()
-    if stats.missing > 0 or stats.new > 0 then
-      -- Install/update plugins silently in background
-      vim.schedule(function()
-        lazy.install({ wait = false, show = false })
-      end)
+-- Override lazy.nvim's open function immediately after setup
+vim.defer_fn(function()
+  local lazy = require("lazy")
+  if lazy and lazy.open then
+    local original_open = lazy.open
+    lazy.open = function(opts)
+      -- Only show UI if explicitly requested with show=true
+      if opts and opts.show == true then
+        return original_open(opts)
+      end
+      -- Don't show UI automatically
+      return nil
     end
-  end,
-  once = true,
-})
+  end
+end, 50)
 
--- Override LazyVim's function that shows lazy UI on pending tasks
+-- Prevent LazyVim from showing lazy UI on pending tasks
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
-    -- Prevent LazyVim from showing lazy UI automatically
-    local lazyvim = package.loaded["lazyvim"]
-    if lazyvim then
-      -- Override any function that might show the UI
-      vim.g.lazyvim_pending_tasks = false
-    end
+    -- Override LazyVim's pending tasks check
+    vim.g.lazyvim_pending_tasks = false
+    
+    -- Install missing plugins silently in background
+    vim.defer_fn(function()
+      local lazy = require("lazy")
+      if lazy then
+        -- Ensure open function is overridden
+        local original_open = lazy.open
+        lazy.open = function(opts)
+          if opts and opts.show == true then
+            return original_open(opts)
+          end
+          return nil
+        end
+        
+        -- Install missing plugins silently
+        local stats = lazy.stats()
+        if stats.missing > 0 then
+          lazy.install({ wait = false, show = false })
+        end
+      end
+    end, 200)
   end,
   once = true,
 })
@@ -151,3 +178,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- Load keymaps and autocmds after lazy setup
 require("config.keymaps")
 require("config.autocmds")
+
+-- Load LazyVim config overrides (if it exists)
+pcall(require, "config.lazyvim")
